@@ -1,0 +1,146 @@
+#!/usr/bin/env python3
+# Copyright (c) Pelagicore AB 2016
+
+import click
+import logging
+import logging.config
+import yaml
+from path import Path
+import sys
+
+from qface.generator import FileSystem, Generator
+from qface.helper.qtcpp import Filters
+from qface.helper.doc import parse_doc
+from qface.watch import monitor
+from qface.shell import sh
+import qface.filters
+
+
+here = Path(__file__).dirname()
+
+logging.config.dictConfig(yaml.load(open(here / 'log.yaml')))
+
+log = logging.getLogger(__file__)
+
+
+def run(src, dst):
+    log.debug('run {0} {1}'.format(src, dst))
+    system = FileSystem.parse(src)
+    generator = Generator(search_path=here / 'templates')
+    generator.register_filter('returnType', Filters.returnType)
+    generator.register_filter('parameterType', Filters.parameterType)
+    generator.register_filter('defaultValue', Filters.defaultValue)
+    generator.register_filter('parse_doc', parse_doc)
+    generator.register_filter('hash', qface.filters.hash)
+    generator.register_filter('signalName', Filters.signalName)
+    generator.register_filter('parameters', Filters.parameters)
+    generator.register_filter('signature', Filters.signature)
+    ctx = {'dst': dst, 'system': system}
+
+    ###############################################################
+    # generate remotes
+    ###############################################################
+
+    dst = generator.apply('{{dst}}/remotes', ctx)
+    generator.destination = dst
+
+    generator.write('remotes.pro', 'remotes.pro', ctx)
+    generator.write('.qmake.conf', 'qmake.conf', ctx)
+    generator.write('servers/servers.pro', 'server/servers.pro', ctx)
+    generator.write('plugins/plugins.pro', 'plugins/plugins.pro', ctx)
+
+    ###############################################################
+    # generate plugins per module
+    ###############################################################
+    for module in system.modules:
+        log.debug('generate code for module %s', module)
+
+        ctx.update({'module': module})
+        dst = generator.apply('{{dst}}/remotes/plugins/{{module|lower|replace(".", "-")}}', ctx)
+        generator.destination = dst
+
+        generator.write('{{module|lower|replace(".", "-")}}.pro', 'plugins/plugin.pro', ctx)
+        generator.write('qmldir', 'plugins/qmldir', ctx)
+        generator.write('plugin.cpp', 'plugins/plugin.cpp', ctx)
+        generator.write('plugin.h', 'plugins/plugin.h', ctx)
+        generator.write('generated/generated.pri', 'plugins/generated.pri', ctx)
+        generator.write('generated/qml{{module.module_name|lower}}module.h', 'plugins/module.h', ctx)
+        generator.write('generated/qml{{module.module_name|lower}}module.cpp', 'plugins/module.cpp', ctx)
+        generator.write('generated/qmlvariantmodel.h', 'shared/variantmodel.h', ctx)
+        generator.write('generated/qmlvariantmodel.cpp', 'shared/variantmodel.cpp', ctx)
+        generator.write('docs/plugin.qdocconf', 'plugins/plugin.qdocconf', ctx)
+        generator.write('docs/plugin-project.qdocconf', 'plugins/plugin-project.qdocconf', ctx)
+        generator.write('docs/docs.pri', 'plugins/docs.pri', ctx)
+        for interface in module.interfaces:
+            log.debug('generate code for interface %s', interface)
+            ctx.update({'interface': interface})
+            generator.write('qml{{interface|lower}}.h', 'plugins/interface.h', ctx, preserve=True)
+            generator.write('qml{{interface|lower}}.cpp', 'plugins/interface.cpp', ctx, preserve=True)
+            generator.write('generated/qmlabstract{{interface|lower}}.h', 'plugins/abstractinterface.h', ctx)
+            generator.write('generated/qmlabstract{{interface|lower}}.cpp', 'plugins/abstractinterface.cpp', ctx)
+        for struct in module.structs:
+            log.debug('generate code for struct %s', struct)
+            ctx.update({'struct': struct})
+            generator.write('generated/qml{{struct|lower}}.h', 'shared/struct.h', ctx)
+            generator.write('generated/qml{{struct|lower}}.cpp', 'shared/struct.cpp', ctx)
+            generator.write('generated/qml{{struct|lower}}model.h', 'shared/structmodel.h', ctx)
+            generator.write('generated/qml{{struct|lower}}model.cpp', 'shared/structmodel.cpp', ctx)
+
+        # client side
+        for interface in module.interfaces:
+            log.debug('generate remote objects code')
+            ctx.update({'interface': interface})
+            generator.write('generated/rep_{{interface|lower}}_replica.h', 'qtro/replica.h', ctx)
+            # generator.write('generated/rep_{{interface|lower}}_source.h', 'qtro/source.h', ctx)
+            generator.write('generated/{{interface|lower}}client.h', 'qtro/client.h', ctx)
+
+    ###############################################################
+    # generate server per module
+    ###############################################################
+    for module in system.modules:
+        log.debug('generate code for server module %s', module)
+        ctx.update({'module': module})
+
+        dst = generator.apply('{{dst}}/remotes/servers/{{module|lower|replace(".", "-")}}', ctx)
+        generator.destination = dst
+
+        generator.write('{{module|lower|replace(".", "-")}}.pro', 'server/server.pro', ctx)
+        generator.write('main.cpp', 'server/main.cpp', ctx)
+        generator.write('generated/generated.pri', 'server/generated.pri', ctx)
+        generator.write('generated/qmlvariantmodel.h', 'shared/variantmodel.h', ctx)
+        generator.write('generated/qmlvariantmodel.cpp', 'shared/variantmodel.cpp', ctx)
+        # server side
+        for interface in module.interfaces:
+            ctx.update({'interface': interface})
+            generator.write('generated/{{interface|lower}}abstractsource.h', 'server/abstractsource.h', ctx)
+            generator.write('generated/{{interface|lower}}abstractsource.cpp', 'server/abstractsource.cpp', ctx)
+            generator.write('{{interface|lower}}service.h', 'server/service.h', ctx, preserve=True)
+            generator.write('{{interface|lower}}service.cpp', 'server/service.cpp', ctx, preserve=True)
+        for struct in module.structs:
+            log.debug('generate code for struct %s', struct)
+            ctx.update({'struct': struct})
+            generator.write('generated/qml{{struct|lower}}.h', 'shared/struct.h', ctx)
+            generator.write('generated/qml{{struct|lower}}.cpp', 'shared/struct.cpp', ctx)
+            generator.write('generated/qml{{struct|lower}}model.h', 'shared/structmodel.h', ctx)
+            generator.write('generated/qml{{struct|lower}}model.cpp', 'shared/structmodel.cpp', ctx)
+
+
+
+@click.command()
+@click.option('--reload/--no-reload', default=False)
+@click.option('cmd', '--exec', type=click.Path(exists=True), multiple=True)
+@click.argument('src', nargs=-1, type=click.Path(exists=True))
+@click.argument('dst', nargs=1, type=click.Path(exists=True))
+def app(src, dst, reload, cmd):
+    """Takes several files or directories as src and generates the code
+    in the given dst directory."""
+    if reload:
+        script = Path(__file__).abspath()
+        monitor(script, src, dst)
+    else:
+        run(src, dst)
+        sh(cmd)
+
+
+if __name__ == '__main__':
+    app()
