@@ -1,13 +1,18 @@
 {% set class = '{0}Replica'.format(interface) %}
 
-#ifndef REP_{{interface|upper}}_REPLICA_H
-#define REP_{{interface|upper}}_REPLICA_H
+#ifndef {{interface|upper}}REPLICA_H
+#define {{interface|upper}}REPLICA_H
 
 #include <QtCore>
 #include <QtRemoteObjects>
 
+{% for property in interface.properties %}
+{% if property.type.is_model and property.type.nested.is_complex %}
+#include "qml{{property.type.nested|lower}}model.h"
+{% endif %}
+{% endfor %}
+#include "qmlvariantmodel.h"
 
-{% for interface in module.interfaces %}
 class {{class}} : public QRemoteObjectReplica
 {
     Q_OBJECT
@@ -48,6 +53,11 @@ public:
       return variant.value<{{property|returnType}}>();
     }
 
+    void set{{property|upperfirst}}({{property|parameters}})
+    {
+        push{{property|upperfirst}}({{property}});
+    }
+
 {% endfor %}
 Q_SIGNALS:
 {% for property in interface.properties %}
@@ -55,11 +65,24 @@ Q_SIGNALS:
 {% endfor %}
 
 public Q_SLOTS:
+{% for property in interface.properties %}
+    void push{{property|upperfirst}}({{property|parameters}})
+    {
+        static int __repc_index = {{class}}::staticMetaObject.indexOfSlot("{{property}}({{operation|parameters('returnType', False)}})");
+        QVariantList __repc_args;
+        __repc_args << QVariant::fromValue({{property}});
+        send(QMetaObject::InvokeMetaMethod, __repc_index, __repc_args);
+    }
+{% endfor %}
+
 {% for operation in interface.operations %}
     virtual {{operation|returnType}} {{operation}}({{operation|parameters}})
     {
         static int __repc_index = {{class}}::staticMetaObject.indexOfSlot("{{operation}}({{operation|parameters('returnType', False)}})");
         QVariantList __repc_args;
+{% for parameter in operation.parameters %}
+        __repc_args << QVariant::fromValue({{parameter}});
+{% endfor %}
         send(QMetaObject::InvokeMetaMethod, __repc_index, __repc_args);
     }
 
@@ -68,6 +91,4 @@ private:
     friend class QT_PREPEND_NAMESPACE(QRemoteObjectNode);
 };
 
-{% endfor %}
-
-#endif // REP_{{interface|upper}}_REPLICA_H
+#endif // {{interface|upper}}REPLICA_H

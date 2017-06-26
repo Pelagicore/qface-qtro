@@ -20,10 +20,8 @@
 */
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
-{% for property in interface.properties %}
-    , m_{{property}}({{property|defaultValue}})
-{% endfor %}
 {
+  setupConnections();
 }
 
 
@@ -73,5 +71,9 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
     return {{operation|defaultValue}};
 }
 {% endfor %}
+
+void {{class}}::setupConnections()
+{
+}
 
 

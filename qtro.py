@@ -74,8 +74,8 @@ def run(src, dst):
         for interface in module.interfaces:
             log.debug('generate code for interface %s', interface)
             ctx.update({'interface': interface})
-            generator.write('qml{{interface|lower}}.h', 'plugins/interface.h', ctx, preserve=True)
-            generator.write('qml{{interface|lower}}.cpp', 'plugins/interface.cpp', ctx, preserve=True)
+            generator.write('qml{{interface|lower}}.h', 'plugins/interface.h', ctx)
+            generator.write('qml{{interface|lower}}.cpp', 'plugins/interface.cpp', ctx)
             generator.write('generated/qmlabstract{{interface|lower}}.h', 'plugins/abstractinterface.h', ctx)
             generator.write('generated/qmlabstract{{interface|lower}}.cpp', 'plugins/abstractinterface.cpp', ctx)
         for struct in module.structs:
@@ -90,9 +90,7 @@ def run(src, dst):
         for interface in module.interfaces:
             log.debug('generate remote objects code')
             ctx.update({'interface': interface})
-            generator.write('generated/rep_{{interface|lower}}_replica.h', 'qtro/replica.h', ctx)
-            # generator.write('generated/rep_{{interface|lower}}_source.h', 'qtro/source.h', ctx)
-            generator.write('generated/{{interface|lower}}client.h', 'qtro/client.h', ctx)
+            generator.write('generated/{{interface|lower}}replica.h', 'qtro/replica.h', ctx)
 
     ###############################################################
     # generate server per module
@@ -114,8 +112,8 @@ def run(src, dst):
             ctx.update({'interface': interface})
             generator.write('generated/{{interface|lower}}abstractsource.h', 'server/abstractsource.h', ctx)
             generator.write('generated/{{interface|lower}}abstractsource.cpp', 'server/abstractsource.cpp', ctx)
-            generator.write('{{interface|lower}}service.h', 'server/service.h', ctx, preserve=True)
-            generator.write('{{interface|lower}}service.cpp', 'server/service.cpp', ctx, preserve=True)
+            generator.write('{{interface|lower}}service.h', 'server/service.h', ctx)
+            generator.write('{{interface|lower}}service.cpp', 'server/service.cpp', ctx)
         for struct in module.structs:
             log.debug('generate code for struct %s', struct)
             ctx.update({'struct': struct})

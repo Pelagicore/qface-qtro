@@ -11,6 +11,7 @@ CONFIG += c++11
 HEADERS += $$PWD/qml{{module.module_name|lower}}module.h
 {% for interface in module.interfaces %}
 HEADERS += $$PWD/qmlabstract{{interface|lower}}.h
+HEADERS += $$PWD/{{interface|lower}}replica.h
 {% endfor %}
 {% for struct in module.structs %}
 HEADERS += $$PWD/qml{{struct|lower}}.h

@@ -1,5 +1,12 @@
 module org.example.echo 1.0
 
+interface Echo {
+    string message;
+    void say(string message);
+    void sayHello();
+    signal broadcast(string message);
+}
+
 interface RLight {
     bool on;
     bool isAutoToggling;

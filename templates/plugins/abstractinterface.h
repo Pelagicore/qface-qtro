@@ -10,6 +10,7 @@
 #include <QtCore>
 
 #include "qml{{module.module_name|lower}}module.h"
+#include "{{interface|lower}}replica.h"
 
 class {{class}} : public QObject
 {
@@ -46,7 +47,11 @@ Q_SIGNALS:
 {% endfor %}
 
 protected:
+    void setupConnections();
 {% for property in interface.properties %}
     {{property|returnType}} m_{{property}};
 {% endfor %}
+
+private:
+    {{interface}}Replica m_replica;
 };
