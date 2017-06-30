@@ -7,7 +7,6 @@
 #pragma once
 
 #include <QtQml>
-#include <QtRemoteObjects>
 
 class Plugin : public QQmlExtensionPlugin
 {
@@ -18,8 +17,5 @@ public:
     explicit Plugin(QObject* parent=nullptr);
     void initializeEngine(QQmlEngine *engine, const char *uri);
     void registerTypes(const char *uri);
-    static Plugin* instance();
 private:
-    static Plugin* s_instance;
-    QRemoteObjectNode *m_node;
 };

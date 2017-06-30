@@ -4,6 +4,7 @@ CONFIG += c++11
 
 {% for interface in module.interfaces %}
 HEADERS += $$PWD/{{interface|lower}}abstractsource.h
+HEADERS += $$PWD/{{interface|lower}}sourceapi.h
 {% endfor %}
 {% for struct in module.structs %}
 HEADERS += $$PWD/qml{{struct|lower}}.h

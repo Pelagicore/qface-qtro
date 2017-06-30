@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QtCore>
+#include <QtRemoteObjects>
 
 #include "qml{{module.module_name|lower}}module.h"
 #include "{{interface|lower}}replica.h"
@@ -16,7 +17,11 @@ class {{class}} : public QObject
 {
     Q_OBJECT
 {% for property in interface.properties %}
+{% if property.type.is_model %}
+    Q_PROPERTY(QAbstractItemModelReplica* {{property}} READ {{property}})
+{% else %}
     Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} {% if not property.readonly %}WRITE set{{property|upperfirst}} {% endif %}{% if not property.const %}NOTIFY {{property}}Changed{% endif %})
+{% endif %}
 {% endfor %}
 
 public:
@@ -29,13 +34,12 @@ public Q_SLOTS:
 {% endfor %}
 
 public:
-{% for property in interface.properties %}
+{% for property in interface.properties if not property.type.is_model %}
     virtual void set{{property|upperfirst}}({{ property|parameterType }});
-{% endfor %}
-
-public:
-{% for property in interface.properties %}
     virtual {{property|returnType}} {{property}}() const;
+{% endfor %}
+{% for property in interface.properties if property.type.is_model %}
+    QAbstractItemModelReplica* {{property}}() const;
 {% endfor %}
 
 Q_SIGNALS:
@@ -48,10 +52,10 @@ Q_SIGNALS:
 
 protected:
     void setupConnections();
-{% for property in interface.properties %}
-    {{property|returnType}} m_{{property}};
-{% endfor %}
 
 private:
-    {{interface}}Replica m_replica;
+    {{interface}}Replica* m_replica;
+{% for property in interface.properties if property.type.is_model %}
+    QAbstractItemModelReplica *m_{{property|lowerfirst}};
+{% endfor %}
 };

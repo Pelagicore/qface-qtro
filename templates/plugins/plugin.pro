@@ -17,12 +17,10 @@ HEADERS += qml{{interface|lower}}.h
 {% endfor %}
 HEADERS += plugin.h
 
-
 {% for interface in module.interfaces %}
 SOURCES += qml{{interface|lower}}.cpp
 {% endfor %}
 SOURCES += plugin.cpp
-
 
 include( generated/generated.pri )
 include( docs/docs.pri )

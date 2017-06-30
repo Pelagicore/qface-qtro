@@ -18,6 +18,7 @@ HEADERS += $$PWD/qml{{struct|lower}}.h
 HEADERS += $$PWD/qml{{struct|lower}}model.h
 {% endfor %}
 HEADERS += $$PWD/qmlvariantmodel.h
+HEADERS += $$PWD/core.h
 
 
 SOURCES += $$PWD/qml{{module.module_name|lower}}module.cpp
@@ -29,5 +30,5 @@ SOURCES += $$PWD/qml{{struct|lower}}.cpp
 SOURCES += $$PWD/qml{{struct|lower}}model.cpp
 {% endfor %}
 SOURCES += $$PWD/qmlvariantmodel.cpp
-
+SOURCES += $$PWD/core.cpp
 

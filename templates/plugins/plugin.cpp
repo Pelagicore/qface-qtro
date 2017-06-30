@@ -8,7 +8,6 @@
 #include "plugin.h"
 
 #include <QtQml>
-#include <QtRemoteObjects>
 
 #include "generated/{{module_name|lower}}.h"
 
@@ -17,17 +16,9 @@
 {% endfor %}
 
 
-Plugin* Plugin::s_instance(nullptr);
-
 Plugin::Plugin(QObject *parent)
     : QQmlExtensionPlugin(parent)
-    , m_node(new QRemoteObjectNode(this))
 {
-    if (s_instance) {
-        qFatal("You can not instantiate the plugin twice");
-    }
-    s_instance = this;
-    m_node->setRegistryUrl(QUrl(QStringLiteral("local:{{module}}")));
 }
 
 void Plugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -44,12 +35,4 @@ void Plugin::registerTypes(const char *uri)
 {% for interface in module.interfaces %}
     Qml{{interface}}::registerQmlTypes(uri, 1, 0);
 {% endfor %}
-}
-
-Plugin* Plugin::instance()
-{
-    if(!s_instance) {
-        qFatal("No instance found");
-    }
-    return s_instance;
 }

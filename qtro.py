@@ -6,7 +6,6 @@ import logging
 import logging.config
 import yaml
 from path import Path
-import sys
 
 from qface.generator import FileSystem, Generator
 from qface.helper.qtcpp import Filters
@@ -63,6 +62,8 @@ def run(src, dst):
         generator.write('qmldir', 'plugins/qmldir', ctx)
         generator.write('plugin.cpp', 'plugins/plugin.cpp', ctx)
         generator.write('plugin.h', 'plugins/plugin.h', ctx)
+        generator.write('generated/core.h', 'plugins/core.h', ctx)
+        generator.write('generated/core.cpp', 'plugins/core.cpp', ctx)
         generator.write('generated/generated.pri', 'plugins/generated.pri', ctx)
         generator.write('generated/qml{{module.module_name|lower}}module.h', 'plugins/module.h', ctx)
         generator.write('generated/qml{{module.module_name|lower}}module.cpp', 'plugins/module.cpp', ctx)
@@ -110,6 +111,7 @@ def run(src, dst):
         # server side
         for interface in module.interfaces:
             ctx.update({'interface': interface})
+            generator.write('generated/{{interface|lower}}sourceapi.h', 'server/sourceapi.h', ctx)
             generator.write('generated/{{interface|lower}}abstractsource.h', 'server/abstractsource.h', ctx)
             generator.write('generated/{{interface|lower}}abstractsource.cpp', 'server/abstractsource.cpp', ctx)
             generator.write('{{interface|lower}}service.h', 'server/service.h', ctx)

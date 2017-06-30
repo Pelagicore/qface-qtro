@@ -5,6 +5,13 @@ interface Echo {
     void say(string message);
     void sayHello();
     signal broadcast(string message);
+    model<string> simpleMessages;
+    model<Message> complexMessages;
+}
+
+
+struct Message {
+    string message;
 }
 
 interface RLight {

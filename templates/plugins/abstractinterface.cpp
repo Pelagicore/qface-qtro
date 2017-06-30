@@ -8,6 +8,7 @@
 #include "{{class|lower}}.h"
 
 #include <QtQml>
+#include "core.h"
 
 /*!
    \qmltype {{interface}}
@@ -21,6 +22,15 @@
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
 {
+  QRemoteObjectNode* node = Core::instance()->node();
+  m_replica = node->acquire<{{interface}}Replica>("{{interface.qualified_name}}");
+  if(!m_replica) {
+    qFatal("Unable to acquire {{interface}}Replica");
+  }
+{% for property in interface.properties if property.type.is_model %}
+    m_{{property|lowerfirst}} = node->acquireModel("{{property.qualified_name}}");
+{% endfor %}
+
   setupConnections();
 }
 
@@ -29,7 +39,7 @@
 {
 }
 
-{% for property in interface.properties %}
+{% for property in interface.properties if not property.type.is_model %}
 /*!
    \qmlproperty {{property.type}} {{interface}}::{{property}}
 {% with doc = property.comment|parse_doc %}
@@ -41,17 +51,20 @@
 
 void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
 {
-    if(m_{{property}} == {{property}}) {
-        return;
-    }
-    m_{{property}} = {{property}};
-    emit {{property}}Changed();
+    m_replica->push{{property|upperfirst}}({{property}});
 }
 
 {{property|returnType}} {{class}}::{{property}}() const
 {
+    return m_replica->{{property}}();
+}
+{% endfor %}
+{% for property in interface.properties if property.type.is_model %}
+QAbstractItemModelReplica* {{class}}::{{property}}() const
+{
     return m_{{property}};
 }
+
 {% endfor %}
 
 {%- for operation in interface.operations %}
@@ -64,16 +77,15 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
 */
 {{operation|returnType}} {{class}}::{{operation}}({{operation.parameters|map('parameterType')|join(', ')}})
 {
-    {% for parameter in operation.parameters %}
-    Q_UNUSED({{parameter.name}});
-    {% endfor %}
-    qWarning() << "{{class}}::{{operation}}(...) not implemented";
-    return {{operation|defaultValue}};
+    m_replica->{{operation}}({{operation.parameters|join(',')}});
 }
 {% endfor %}
 
 void {{class}}::setupConnections()
 {
+  {% for property in interface.properties %}
+  connect(m_replica, &{{interface}}Replica::{{property}}Changed, this, &{{class}}::{{property}}Changed);
+  {% endfor %}
 }
 
 
