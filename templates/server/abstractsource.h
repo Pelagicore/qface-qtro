@@ -32,7 +32,7 @@ public:
 {% for property in interface.properties %}
     virtual {{property|returnType}} {{property}}() const;
 {% endfor %}
-{% for property in interface.properties %}
+{% for property in interface.properties if not property.type.is_model %}
     virtual void set{{property|upperfirst}}({{property|parameterType}});
 {% endfor %}
 
@@ -45,11 +45,8 @@ Q_SIGNALS:
 {% endfor %}
 
 public Q_SLOTS:
-{% for property in interface.properties %}
-    virtual void push{{property|upperfirst}}({{property|parameters}})
-    {
-        set{{property|upperfirst}}({{property}});
-    }
+{% for property in interface.properties  if not property.type.is_model %}
+    virtual void push{{property|upperfirst}}({{property|parameters}});
 {% endfor %}
 {% for operation in interface.operations %}
     virtual {{operation|returnType}} {{operation}}({{operation|parameters}});

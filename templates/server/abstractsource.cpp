@@ -28,12 +28,19 @@
     {% endif %}
 }
 {% endfor %}
-{% for property in interface.properties %}
+{% for property in interface.properties if not property.type.is_model %}
 void {{class}}::set{{property|upperfirst}}({{property|parameterType}})
 {
     Q_UNUSED({{property}})
 }
 {% endfor %}
+{% for property in interface.properties  if not property.type.is_model %}
+void {{class}}::push{{property|upperfirst}}({{property|parameters}})
+{
+        set{{property|upperfirst}}({{property}});
+}
+{% endfor %}
+
 {% for operation in interface.operations %}
 {{operation|returnType}} {{class}}::{{operation}}({{operation|parameters}})
 {
