@@ -6,12 +6,13 @@
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
 {% for property in interface.properties if property.type.is_model and property.type.nested.is_complex %}
-    , m_{{property|lowerfirst}}(new Qml{{property.type.nested}}Model(this))
+    , m_{{property|lowerfirst}}(new {{property.type.nested}}Model(this))
 {% endfor %}
 {% for property in interface.properties if property.type.is_model and property.type.nested.is_primitive %}
-    , m_{{property|lowerfirst}}(new QmlVariantModel(this))
+    , m_{{property|lowerfirst}}(new VariantModel(this))
 {% endfor %}
 {
+    qDebug() << "{{class}}::{{class}}(...)";
 }
 
 {{class}}::~{{class}}()
@@ -37,13 +38,15 @@ void {{class}}::set{{property|upperfirst}}({{property|parameterType}})
 {% for property in interface.properties  if not property.type.is_model %}
 void {{class}}::push{{property|upperfirst}}({{property|parameters}})
 {
-        set{{property|upperfirst}}({{property}});
+    qDebug() << "{{class}}::push{{property|upperfirst}}(...)";
+    set{{property|upperfirst}}({{property}});
 }
 {% endfor %}
 
 {% for operation in interface.operations %}
 {{operation|returnType}} {{class}}::{{operation}}({{operation|parameters}})
 {
+    qDebug() << "{{class}}::{{operation}}(...)";
     {% for parameter in operation.parameters %}
     Q_UNUSED({{parameter}})
     {% endfor %}

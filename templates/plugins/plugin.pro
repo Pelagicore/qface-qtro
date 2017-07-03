@@ -6,19 +6,19 @@
 TEMPLATE = lib
 QT += qml quick
 CONFIG += qt plugin c++11
-DESTDIR = $$ROOT_BUILD/imports/{{module.name_parts|join('/')}}
+DESTDIR = $$BUILD_DIR/imports/{{module.name_parts|join('/')}}
 TARGET = {{module|lower}}
 
 uri = {{module}}
 
 
 {% for interface in module.interfaces %}
-HEADERS += qml{{interface|lower}}.h
+HEADERS += {{interface|lower}}.h
 {% endfor %}
 HEADERS += plugin.h
 
 {% for interface in module.interfaces %}
-SOURCES += qml{{interface|lower}}.cpp
+SOURCES += {{interface|lower}}.cpp
 {% endfor %}
 SOURCES += plugin.cpp
 
@@ -28,7 +28,7 @@ include( docs/docs.pri )
 DISTFILES = qmldir
 
 !equals(_PRO_FILE_PWD_, $$OUT_PWD) {
-    copy_qmldir.target = $$ROOT_BUILD/imports/{{module.name_parts|join('/')}}/qmldir
+    copy_qmldir.target = $$BUILD_DIR/imports/{{module.name_parts|join('/')}}/qmldir
     copy_qmldir.depends = $$_PRO_FILE_PWD_/qmldir
     copy_qmldir.commands = $(COPY_FILE) \"$$replace(copy_qmldir.depends, /, $$QMAKE_DIR_SEP)\" \"$$replace(copy_qmldir.target, /, $$QMAKE_DIR_SEP)\"
     QMAKE_EXTRA_TARGETS += copy_qmldir

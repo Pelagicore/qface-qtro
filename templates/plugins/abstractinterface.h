@@ -1,5 +1,5 @@
 {# Copyright (c) Pelagicore AB 2016 #}
-{% set class = 'QmlAbstract{0}'.format(interface) %}
+{% set class = 'Abstract{0}'.format(interface) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -10,8 +10,19 @@
 #include <QtCore>
 #include <QtRemoteObjects>
 
-#include "qml{{module.module_name|lower}}module.h"
 #include "{{interface|lower}}replica.h"
+{% for property in interface.properties %}
+{% if property.type.is_model and property.type.nested.is_complex %}
+#include "{{property.type.nested|lower}}model.h"
+{% endif %}
+{% endfor %}
+#include "variantmodel.h"
+{% for struct in module.structs %}
+#include "{{struct|lower}}.h"
+{% endfor %}
+{% for enum in module.enums %}
+#include "{{enum|lower}}.h"
+{% endfor %}
 
 class {{class}} : public QObject
 {

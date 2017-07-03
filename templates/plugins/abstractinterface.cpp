@@ -1,5 +1,5 @@
 {# Copyright (c) Pelagicore AB 2016 #}
-{% set class = 'QmlAbstract{0}'.format(interface) %}
+{% set class = 'Abstract{0}'.format(interface) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -85,6 +85,9 @@ void {{class}}::setupConnections()
 {
   {% for property in interface.properties %}
   connect(m_replica, &{{interface}}Replica::{{property}}Changed, this, &{{class}}::{{property}}Changed);
+  {% endfor %}
+  {% for signal in interface.signals %}
+  connect(m_replica, SIGNAL({{signal}}({{signal|signature}})), this, SIGNAL({{signal}}({{signal|signature}})));
   {% endfor %}
 }
 

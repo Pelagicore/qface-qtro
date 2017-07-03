@@ -9,10 +9,10 @@
 
 #include <QtCore>
 
-#include "qmlvariantmodel.h"
+#include "variantmodel.h"
 {% for struct in module.structs %}
-#include "qml{{struct|lower}}.h"
-#include "qml{{struct|lower}}model.h"
+#include "{{struct|lower}}.h"
+#include "{{struct|lower}}model.h"
 {% endfor %}
 
 class {{class}} : public QObject {
@@ -33,7 +33,7 @@ public:
 {% endfor %}
 
 {% for struct in module.structs %}
-    Q_INVOKABLE Qml{{struct}} create{{struct}}();
+    Q_INVOKABLE {{struct}} create{{struct}}();
 {% endfor %}
 
     static void registerTypes();

@@ -1,5 +1,5 @@
 {# Copyright (c) Pelagicore AB 2016 #}
-{% set class = 'QmlVariantModel' %}
+{% set class = 'VariantModel' %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.

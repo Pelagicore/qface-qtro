@@ -1,5 +1,5 @@
 {# Copyright (c) Pelagicore AB 2016 #}
-{% set class = 'Qml{0}Model'.format(struct) %}
+{% set class = '{0}Model'.format(struct) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -11,7 +11,7 @@
     : QAbstractListModel(parent)
 {
     {% for field in struct.fields %}
-    m_roleNames.insert(Roles::{{field|upperfirst}}, QByteArray("{{field}}"));
+    m_roleNames.insert(Roles::{{field|upperfirst}}Role, QByteArray("{{field}}"));
     {% endfor %}
 }
 
@@ -20,7 +20,7 @@ int {{class}}::count() const
     return m_data.count();
 }
 
-Qml{{struct}} {{class}}::get(int index)
+{{struct}} {{class}}::get(int index)
 {
     return m_data.value(index);
 }
@@ -36,10 +36,10 @@ QVariant {{class}}::data(const QModelIndex &index, int role) const
     if(index.row() < 0 || index.row() >= count()) {
         return QVariant();
     }
-    const Qml{{struct}} &{{struct|lower}} = m_data.at(index.row());
+    const {{struct}} &{{struct|lower}} = m_data.at(index.row());
     switch(role) {
     {% for field in struct.fields %}
-    case Roles::{{field|upperfirst}}:
+    case Roles::{{field|upperfirst}}Role:
         return QVariant::fromValue({{struct|lower}}.{{field}}());
     {% endfor %}
     }
@@ -52,7 +52,7 @@ QHash<int, QByteArray> {{class}}::roleNames() const
 }
 
 
-void {{class}}::insert(int row, const Qml{{struct}} &{{struct|lower}})
+void {{class}}::insert(int row, const {{struct}} &{{struct|lower}})
 {
     if (row < 0)
         row = 0;
@@ -65,19 +65,19 @@ void {{class}}::insert(int row, const Qml{{struct}} &{{struct|lower}})
     emit countChanged(count());
 }
 
-void {{class}}::reset(const QList<Qml{{struct}}> data)
+void {{class}}::reset(const QList<{{struct}}> data)
 {
     beginResetModel();
     m_data = data;
     endResetModel();
 }
 
-void {{class}}::append(const Qml{{struct}} &{{struct|lower}})
+void {{class}}::append(const {{struct}} &{{struct|lower}})
 {
     insert(m_data.count(), {{struct|lower}});
 }
 
-void {{class}}::update(int row, const Qml{{struct}} &{{struct|lower}})
+void {{class}}::update(int row, const {{struct}} &{{struct|lower}})
 {
     if(row < 0 || row >= m_data.count()) {
         return;

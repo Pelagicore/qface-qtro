@@ -1,5 +1,5 @@
 {# Copyright (c) Pelagicore AB 2016 #}
-{% set class = 'Qml{0}'.format(struct) %}
+{% set class = '{0}'.format(struct) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -62,6 +62,12 @@ public:
 
 {{class}}::~{{class}}()
 {
+}
+
+void {{class}}::registerTypes()
+{
+    qRegisterMetaType<{{class}}>();
+    qRegisterMetaTypeStreamOperators<{{class}}>();
 }
 
 {% for field in struct.fields %}

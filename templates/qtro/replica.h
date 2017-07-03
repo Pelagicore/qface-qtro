@@ -8,10 +8,17 @@
 
 {% for property in interface.properties %}
 {% if property.type.is_model and property.type.nested.is_complex %}
-#include "qml{{property.type.nested|lower}}model.h"
+#include "{{property.type.nested|lower}}model.h"
 {% endif %}
 {% endfor %}
-#include "qmlvariantmodel.h"
+#include "variantmodel.h"
+{% for struct in module.structs %}
+#include "{{struct|lower}}.h"
+{% endfor %}
+{% for enum in module.enums %}
+#include "{{enum|lower}}.h"
+{% endfor %}
+
 
 class {{class}} : public QRemoteObjectReplica
 {
@@ -62,6 +69,9 @@ public:
 Q_SIGNALS:
 {% for property in interface.properties %}
     void {{property}}Changed({{property|returnType}});
+{% endfor %}
+{% for signal in interface.signals %}
+    void {{signal}}({{signal|parameters}});
 {% endfor %}
 
 public Q_SLOTS:

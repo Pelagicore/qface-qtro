@@ -9,10 +9,14 @@
 
 #include <QtQml>
 
-#include "generated/{{module_name|lower}}.h"
-
 {% for interface in module.interfaces %}
-#include "qml{{interface|lower}}.h"
+#include "{{interface|lower}}.h"
+{% endfor %}
+{% for struct in module.structs %}
+#include "generated/{{struct|lower}}.h"
+{% endfor %}
+{% for enum in module.enums %}
+#include "generated/{{enum|lower}}.h"
 {% endfor %}
 
 
@@ -29,10 +33,13 @@ void Plugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
 void Plugin::registerTypes(const char *uri)
 {
-    {{module_name}}::registerTypes();
-    // @uri {{module|lower}}
-    {{module_name}}::registerQmlTypes(uri, 1, 0);
 {% for interface in module.interfaces %}
-    Qml{{interface}}::registerQmlTypes(uri, 1, 0);
+    {{interface}}::registerQmlTypes(uri, 1, 0);
+{% endfor %}
+{% for struct in module.structs %}
+    {{struct}}::registerTypes();
+{% endfor %}
+{% for enum in module.enums %}
+    {{enum}}::registerTypes();
 {% endfor %}
 }

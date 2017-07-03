@@ -10,10 +10,16 @@
 
 {% for property in interface.properties %}
 {% if property.type.is_model and property.type.nested.is_complex %}
-#include "qml{{property.type.nested|lower}}model.h"
+#include "{{property.type.nested|lower}}model.h"
 {% endif %}
 {% endfor %}
-#include "qmlvariantmodel.h"
+#include "variantmodel.h"
+{% for struct in module.structs %}
+#include "{{struct|lower}}.h"
+{% endfor %}
+{% for enum in module.enums %}
+#include "{{enum|lower}}.h"
+{% endfor %}
 
 class {{class}} : public QObject
 {
@@ -54,10 +60,10 @@ public Q_SLOTS:
 
 private:
 {% for property in interface.properties if property.type.is_model and property.type.nested.is_complex %}
-    Qml{{property.type.nested}}Model *m_{{property|lowerfirst}};
+    {{property.type.nested}}Model *m_{{property|lowerfirst}};
 {% endfor %}
 {% for property in interface.properties if property.type.is_model and property.type.nested.is_primitive %}
-    QmlVariantModel * m_{{property|lowerfirst}};
+    VariantModel * m_{{property|lowerfirst}};
 {% endfor %}
     friend class QT_PREPEND_NAMESPACE(QRemoteObjectNode);
 };

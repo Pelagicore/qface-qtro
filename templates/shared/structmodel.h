@@ -1,5 +1,5 @@
 {# Copyright (c) Pelagicore AB 2016 #}
-{% set class = 'Qml{0}Model'.format(struct) %}
+{% set class = '{0}Model'.format(struct) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -9,22 +9,26 @@
 
 #include <QtCore>
 
-#include "qml{{struct|lower}}.h"
+#include "{{struct|lower}}.h"
 
 class {{class}} : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
-    enum Roles { {{struct.fields|map('upperfirst')|join(', ')}} };
+    enum Roles {
+{% for field in struct.fields %}
+        {{field|upperfirst}}Role = Qt::UserRole + {{loop.index}},
+{% endfor %}
+    };
     {{class}}(QObject *parent = nullptr);
-    Q_INVOKABLE Qml{{struct}} get(int index);
+    Q_INVOKABLE {{struct}} get(int index);
     int count() const;
-    void insert(int row, const Qml{{struct}} &{{struct|lower}});
-    void append(const Qml{{struct}} &{{struct|lower}});
-    void update(int row, const Qml{{struct}} &{{struct|lower}});
+    void insert(int row, const {{struct}} &{{struct|lower}});
+    void append(const {{struct}} &{{struct|lower}});
+    void update(int row, const {{struct}} &{{struct|lower}});
     void remove(int row);
-    void reset(const QList<Qml{{struct}}> data);
+    void reset(const QList<{{struct}}> data);
     void clear();
 public: // from QAbstractListModel
     virtual int rowCount(const QModelIndex &parent) const;
@@ -33,7 +37,7 @@ public: // from QAbstractListModel
 Q_SIGNALS:
    void countChanged(int count);
 private:
-    QList<Qml{{struct}}> m_data;
+    QList<{{struct}}> m_data;
     QHash<int, QByteArray> m_roleNames;
 };
 

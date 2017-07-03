@@ -1,11 +1,13 @@
 {# Copyright (c) Pelagicore AB 2016 #}
-{% set class = 'Qml{0}'.format(struct) %}
+{% set class = '{0}'.format(struct) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
 ****************************************************************************/
 
-#pragma once
+#ifndef {{class|upper}}_H
+#define {{class|upper}}_H
+
 
 #include <QtCore>
 
@@ -24,6 +26,7 @@ public:
     {{class}}(const {{class}} &other);
     ~{{class}}();
 
+    static void registerTypes();
     Q_INVOKABLE {{class}} clone();
 
     {{class}} &operator=(const {{class}} &other);
@@ -45,5 +48,7 @@ QDataStream &operator<<(QDataStream &ds, const {{class}} &obj);
 QDataStream &operator>>(QDataStream &ds, {{class}} &obj);
 
 Q_DECLARE_METATYPE({{class}})
+
+#endif // {{class|upper}}_H
 
 

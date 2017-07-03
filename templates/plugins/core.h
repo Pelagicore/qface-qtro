@@ -18,6 +18,8 @@ public:
     static Core* instance();
     QRemoteObjectNode* node() const;
 private:
+    void reportError(QRemoteObjectNode::ErrorCode code);
+private:
     static Core* s_instance;
     QRemoteObjectNode* m_node;
 };
