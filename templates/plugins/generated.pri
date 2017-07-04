@@ -10,16 +10,16 @@ CONFIG += c++11
 
 {% for interface in module.interfaces %}
 HEADERS += $$PWD/abstract{{interface|lower}}.h
-HEADERS += $$PWD/{{interface|lower}}replica.h
+# HEADERS += $$PWD/{{interface|lower}}replica.h
 {% endfor %}
 {% for struct in module.structs %}
-HEADERS += $$PWD/{{struct|lower}}.h
-HEADERS += $$PWD/{{struct|lower}}model.h
+# HEADERS += $$PWD/{{struct|lower}}.h
+# HEADERS += $$PWD/{{struct|lower}}model.h
 {% endfor %}
 {% for enum in module.enums %}
-HEADERS += $$PWD/{{enum|lower}}.h
+# HEADERS += $$PWD/{{enum|lower}}.h
 {% endfor %}
-HEADERS += $$PWD/variantmodel.h
+# HEADERS += $$PWD/variantmodel.h
 HEADERS += $$PWD/core.h
 
 
@@ -27,9 +27,9 @@ HEADERS += $$PWD/core.h
 SOURCES += $$PWD/abstract{{interface|lower}}.cpp
 {% endfor %}
 {% for struct in module.structs %}
-SOURCES += $$PWD/{{struct|lower}}.cpp
-SOURCES += $$PWD/{{struct|lower}}model.cpp
+# SOURCES += $$PWD/{{struct|lower}}.cpp
+# SOURCES += $$PWD/{{struct|lower}}model.cpp
 {% endfor %}
-SOURCES += $$PWD/variantmodel.cpp
+# SOURCES += $$PWD/variantmodel.cpp
 SOURCES += $$PWD/core.cpp
 

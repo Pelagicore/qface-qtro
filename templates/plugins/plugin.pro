@@ -4,13 +4,12 @@
 ## All changes will not be override.
 
 TEMPLATE = lib
-QT += qml quick
+QT += qml quick remoteobjects
 CONFIG += qt plugin c++11
 DESTDIR = $$BUILD_DIR/imports/{{module.name_parts|join('/')}}
 TARGET = {{module|lower}}
 
 uri = {{module}}
-
 
 {% for interface in module.interfaces %}
 HEADERS += {{interface|lower}}.h
@@ -24,6 +23,8 @@ SOURCES += plugin.cpp
 
 include( generated/generated.pri )
 include( docs/docs.pri )
+
+REPC_REPLICA += $$SOURCE_DIR/shared/{{module}}.rep
 
 DISTFILES = qmldir
 

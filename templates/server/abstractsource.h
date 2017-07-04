@@ -7,6 +7,7 @@
 
 #include <QtCore>
 #include <QtRemoteObjects>
+#include "rep_{{module}}_source.h"
 
 {% for property in interface.properties %}
 {% if property.type.is_model and property.type.nested.is_complex %}
@@ -15,59 +16,46 @@
 {% endfor %}
 #include "variantmodel.h"
 {% for struct in module.structs %}
-#include "{{struct|lower}}.h"
+// #include "{{struct|lower}}.h"
 {% endfor %}
 {% for enum in module.enums %}
-#include "{{enum|lower}}.h"
+// #include "{{enum|lower}}.h"
 {% endfor %}
 
-class {{class}} : public QObject
+class {{class}} : public {{interface}}SimpleSource
 {
-  Q_OBJECT
-  Q_CLASSINFO(QCLASSINFO_REMOTEOBJECT_TYPE, "{{interface}}")
-  Q_CLASSINFO(QCLASSINFO_REMOTEOBJECT_SIGNATURE, "{{interface|hash}}")
-{% for property in interface.properties if not property.type.is_model %}
-  Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} {% if not property.readonly %}WRITE set{{property|upperfirst}} {% endif %}{% if not property.const %}NOTIFY {{property}}Changed{% endif %})
+    Q_OBJECT
+{% for property in interface.properties if property.type.is_model %}
+{% if property.type.nested.is_primitive %}
+    Q_PROPERTY(VariantModel* {{property}} READ {{property}} CONSTANT)
+{% else %}
+    Q_PROPERTY({{property.type.nested|upperfirst}}Model* {{property}} READ {{property}} CONSTANT)
+{% endif %}
 {% endfor %}
 
 public:
     explicit {{class}}(QObject *parent = nullptr);
-public:
-    virtual ~{{class}}();
 
-{% for property in interface.properties %}
-    virtual {{property|returnType}} {{property}}() const;
-{% endfor %}
-{% for property in interface.properties if not property.type.is_model %}
-    virtual void set{{property|upperfirst}}({{property|parameterType}});
-{% endfor %}
-
-Q_SIGNALS:
-{% for property in interface.properties %}
-    void {{property}}Changed({{property|returnType}});
-{% endfor %}
-{% for signal in interface.signals %}
-    void {{signal}}({{signal|parameters}});
+{% for property in interface.properties if property.type.is_model %}
+{% if property.type.nested.is_primitive %}
+    virtual VariantModel* {{property}}() const;
+{% else %}
+    virtual {{property.type.nested|upperfirst}}Model* {{property}}() const;
+{% endif %}
 {% endfor %}
 
 public Q_SLOTS:
-{% for property in interface.properties  if not property.type.is_model %}
-    virtual void push{{property|upperfirst}}({{property|parameters}});
-{% endfor %}
 {% for operation in interface.operations %}
     virtual {{operation|returnType}} {{operation}}({{operation|parameters}});
 {% endfor %}
-
 private:
-{% for property in interface.properties if property.type.is_model and property.type.nested.is_complex %}
-    {{property.type.nested}}Model *m_{{property|lowerfirst}};
+{% for property in interface.properties if property.type.is_model %}
+{% if property.type.nested.is_primitive %}
+    VariantModel* m_{{property}};
+{% else %}
+    {{property.type.nested|upperfirst}}Model* m_{{property}};
+{% endif %}
 {% endfor %}
-{% for property in interface.properties if property.type.is_model and property.type.nested.is_primitive %}
-    VariantModel * m_{{property|lowerfirst}};
-{% endfor %}
-    friend class QT_PREPEND_NAMESPACE(QRemoteObjectNode);
 };
-
-
 
 #endif // {{class|upper}}_H

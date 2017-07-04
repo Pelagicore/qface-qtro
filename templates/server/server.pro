@@ -1,6 +1,5 @@
 TEMPLATE = app
-QT += core
-QT += remoteobjects
+QT += core remoteobjects
 QT -= gui
 
 CONFIG += c++11
@@ -21,3 +20,5 @@ SOURCES += {{interface|lower}}service.cpp
 {% endfor %}
 SOURCES += main.cpp
 
+
+REPC_SOURCE += $$SOURCE_DIR/shared/{{module}}.rep

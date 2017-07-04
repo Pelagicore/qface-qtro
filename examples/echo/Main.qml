@@ -16,12 +16,14 @@ ApplicationWindow {
         onPinged: {
             console.log('message: ')
             panel.response = message.source + ' / ' + message.message
+            ping.echo("done");
         }
     }
 
     PingPanel {
         id: panel
         anchors.fill: parent
+        view.model: ping.messages
         onPing: {
             ping.ping(message);
         }

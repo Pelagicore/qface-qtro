@@ -10,26 +10,14 @@
 #include <QtCore>
 #include <QtRemoteObjects>
 
-#include "{{interface|lower}}replica.h"
-{% for property in interface.properties %}
-{% if property.type.is_model and property.type.nested.is_complex %}
-#include "{{property.type.nested|lower}}model.h"
-{% endif %}
-{% endfor %}
-#include "variantmodel.h"
-{% for struct in module.structs %}
-#include "{{struct|lower}}.h"
-{% endfor %}
-{% for enum in module.enums %}
-#include "{{enum|lower}}.h"
-{% endfor %}
+#include "rep_{{module}}_replica.h"
 
 class {{class}} : public QObject
 {
     Q_OBJECT
 {% for property in interface.properties %}
 {% if property.type.is_model %}
-    Q_PROPERTY(QAbstractItemModelReplica* {{property}} READ {{property}})
+    Q_PROPERTY(QAbstractItemModelReplica* {{property}} READ {{property}} CONSTANT)
 {% else %}
     Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} {% if not property.readonly %}WRITE set{{property|upperfirst}} {% endif %}{% if not property.const %}NOTIFY {{property}}Changed{% endif %})
 {% endif %}
@@ -57,7 +45,7 @@ Q_SIGNALS:
 {% for signal in interface.signals %}
     void {{signal}}({{signal.parameters|map('parameterType')|join(', ')}});
 {% endfor %}
-{% for property in interface.properties %}
+{% for property in interface.properties if not property.type.is_model %}
     void {{property}}Changed();
 {% endfor %}
 
@@ -65,8 +53,8 @@ protected:
     void setupConnections();
 
 private:
-    {{interface}}Replica* m_replica;
+    QScopedPointer<{{interface}}Replica> m_replica;
 {% for property in interface.properties if property.type.is_model %}
-    QAbstractItemModelReplica *m_{{property|lowerfirst}};
+    QScopedPointer<QAbstractItemModelReplica> m_{{property|lowerfirst}};
 {% endfor %}
 };

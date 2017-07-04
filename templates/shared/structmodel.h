@@ -9,7 +9,7 @@
 
 #include <QtCore>
 
-#include "{{struct|lower}}.h"
+#include "rep_{{module}}_source.h"
 
 class {{class}} : public QAbstractListModel
 {

@@ -12,12 +12,12 @@
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}.h"
 {% endfor %}
-{% for struct in module.structs %}
-#include "generated/{{struct|lower}}.h"
-{% endfor %}
-{% for enum in module.enums %}
-#include "generated/{{enum|lower}}.h"
-{% endfor %}
+// {% for struct in module.structs %}
+// #include "generated/{{struct|lower}}.h"
+// {% endfor %}
+// {% for enum in module.enums %}
+// #include "generated/{{enum|lower}}.h"
+// {% endfor %}
 
 
 Plugin::Plugin(QObject *parent)
@@ -37,9 +37,9 @@ void Plugin::registerTypes(const char *uri)
     {{interface}}::registerQmlTypes(uri, 1, 0);
 {% endfor %}
 {% for struct in module.structs %}
-    {{struct}}::registerTypes();
+    // {{struct}}::registerTypes();
 {% endfor %}
 {% for enum in module.enums %}
-    {{enum}}::registerTypes();
+    // {{enum}}::registerTypes();
 {% endfor %}
 }

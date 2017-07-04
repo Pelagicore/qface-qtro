@@ -22,16 +22,21 @@
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
 {
-  QRemoteObjectNode* node = Core::instance()->node();
-  m_replica = node->acquire<{{interface}}Replica>("{{interface.qualified_name}}");
-  if(!m_replica) {
-    qFatal("Unable to acquire {{interface}}Replica");
-  }
+    QRemoteObjectNode* node = Core::instance()->node();
+
+    m_replica.reset(node->acquire<{{interface}}Replica>("{{interface.qualified_name}}"));
+
+    if(!m_replica) {
+      qFatal("Unable to acquire {{interface}}Replica");
+    }
 {% for property in interface.properties if property.type.is_model %}
-    m_{{property|lowerfirst}} = node->acquireModel("{{property.qualified_name}}");
+    m_{{property|lowerfirst}}.reset(node->acquireModel("{{property.qualified_name}}"));
+    if(!m_{{property|lowerfirst}}) {
+      qFatal("Unable to acquire {{property.qualified_name}}");
+    }
 {% endfor %}
 
-  setupConnections();
+    setupConnections();
 }
 
 
@@ -62,7 +67,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
 {% for property in interface.properties if property.type.is_model %}
 QAbstractItemModelReplica* {{class}}::{{property}}() const
 {
-    return m_{{property}};
+    return m_{{property}}.data();
 }
 
 {% endfor %}
@@ -83,11 +88,11 @@ QAbstractItemModelReplica* {{class}}::{{property}}() const
 
 void {{class}}::setupConnections()
 {
-  {% for property in interface.properties %}
-  connect(m_replica, &{{interface}}Replica::{{property}}Changed, this, &{{class}}::{{property}}Changed);
+  {% for property in interface.properties if not property.type.is_model %}
+  connect(m_replica.data(), &{{interface}}Replica::{{property}}Changed, this, &{{class}}::{{property}}Changed);
   {% endfor %}
   {% for signal in interface.signals %}
-  connect(m_replica, SIGNAL({{signal}}({{signal|signature}})), this, SIGNAL({{signal}}({{signal|signature}})));
+  connect(m_replica.data(), &{{interface}}Replica::{{signal}}, this, &{{class}}::{{signal}});
   {% endfor %}
 }
 

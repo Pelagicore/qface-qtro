@@ -4,49 +4,35 @@
 
 
 {{class}}::{{class}}(QObject *parent)
-    : QObject(parent)
-{% for property in interface.properties if property.type.is_model and property.type.nested.is_complex %}
-    , m_{{property|lowerfirst}}(new {{property.type.nested}}Model(this))
+    : {{interface}}SimpleSource(parent)
+{% for property in interface.properties if property.type.is_model %}
+{% if property.type.nested.is_primitive %}
+    , m_{{property}}(new VariantModel(this))
+{% else %}
+    , m_{{property}}(new {{property.type.nested|upperfirst}}Model(this))
+{% endif %}
 {% endfor %}
-{% for property in interface.properties if property.type.is_model and property.type.nested.is_primitive %}
-    , m_{{property|lowerfirst}}(new VariantModel(this))
-{% endfor %}
-{
-    qDebug() << "{{class}}::{{class}}(...)";
-}
-
-{{class}}::~{{class}}()
 {
 }
 
-{% for property in interface.properties %}
-{{property|returnType}} {{class}}::{{property}}() const
+{% for property in interface.properties if property.type.is_model %}
+{% if property.type.nested.is_primitive %}
+VariantModel* {{class}}::{{property}}() const
 {
-    {% if property.type.is_model %}
     return m_{{property}};
-    {% else %}
-    return {{property|defaultValue}};
-    {% endif %}
 }
-{% endfor %}
-{% for property in interface.properties if not property.type.is_model %}
-void {{class}}::set{{property|upperfirst}}({{property|parameterType}})
+{% else %}
+{{property.type.nested|upperfirst}}Model* {{class}}::{{property}}() const
 {
-    Q_UNUSED({{property}})
+    return m_{{property}};
 }
-{% endfor %}
-{% for property in interface.properties  if not property.type.is_model %}
-void {{class}}::push{{property|upperfirst}}({{property|parameters}})
-{
-    qDebug() << "{{class}}::push{{property|upperfirst}}(...)";
-    set{{property|upperfirst}}({{property}});
-}
+{% endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
 {{operation|returnType}} {{class}}::{{operation}}({{operation|parameters}})
 {
-    qDebug() << "{{class}}::{{operation}}(...)";
+    qDebug() << "{{class}}::{{operation}}(...): Not implemented";
     {% for parameter in operation.parameters %}
     Q_UNUSED({{parameter}})
     {% endfor %}

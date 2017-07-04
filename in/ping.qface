@@ -6,6 +6,9 @@ interface Ping {
     void ping(string message);
     void updateStatus(Status status);
     signal pinged(Message message)
+    void echo(string msg);
+    model<Message> messages;
+    model<string> strings;
 }
 
 enum Status {

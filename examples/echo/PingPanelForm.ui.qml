@@ -5,7 +5,8 @@ import QtQuick.Layouts 1.3
 Item {
     width: 400
     height: 400
-//    property alias responseField: responseField
+    property alias view: view
+    //    property alias responseField: responseField
     property alias pingField: pingField
     property alias messageField: messageField
     property alias response: responseField.text
@@ -37,13 +38,55 @@ Item {
             Layout.rowSpan: 1
         }
 
-        Item {
-            id: item1
-            width: 200
-            height: 200
+        ListView {
+            id: view
+            width: 110
+            height: 160
             Layout.columnSpan: 2
+            Layout.rowSpan: 1
             Layout.fillHeight: true
             Layout.fillWidth: true
+            delegate: Item {
+                x: 5
+                width: 80
+                height: 40
+                Row {
+                    id: row1
+                    spacing: 10
+                    Rectangle {
+                        width: 40
+                        height: 40
+                        color: colorCode
+                    }
+
+                    Text {
+                        text: name
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.bold: true
+                    }
+                }
+            }
+            model: ListModel {
+                ListElement {
+                    name: "Grey"
+                    colorCode: "grey"
+                }
+
+                ListElement {
+                    name: "Red"
+                    colorCode: "red"
+                }
+
+                ListElement {
+                    name: "Blue"
+                    colorCode: "blue"
+                }
+
+                ListElement {
+                    name: "Green"
+                    colorCode: "green"
+                }
+            }
         }
     }
 }
