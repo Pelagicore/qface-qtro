@@ -1,8 +1,3 @@
-/****************************************************************************
-** This is an auto-generated file.
-** Do not edit! All changes made to it will be lost.
-****************************************************************************/
-
 TEMPLATE = lib
 QT += qml quick remoteobjects
 CONFIG += qt plugin c++11

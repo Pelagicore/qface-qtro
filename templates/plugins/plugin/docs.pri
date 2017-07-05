@@ -1,8 +1,3 @@
-/****************************************************************************
-** This is an auto-generated file.
-** Do not edit! All changes made to it will be lost.
-****************************************************************************/
-
 exists($$[QT_INSTALL_BINS]/qdoc):exists($$[QT_INSTALL_BINS]/qhelpgenerator) {
     check_qdoc = "qdoc/qhelpgenerator in $$[QT_INSTALL_BINS]"
     QDOC = $$[QT_INSTALL_BINS]/qdoc
