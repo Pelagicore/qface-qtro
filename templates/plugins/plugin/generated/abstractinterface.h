@@ -11,6 +11,9 @@
 
 #include "rep_{{module}}_replica.h"
 
+
+{{interface|open_ns}}
+
 class {{class}} : public QObject
 {
     Q_OBJECT
@@ -57,3 +60,6 @@ private:
     QScopedPointer<QAbstractItemModelReplica> m_{{property|lowerfirst}};
 {% endfor %}
 };
+
+{{interface|close_ns}}
+

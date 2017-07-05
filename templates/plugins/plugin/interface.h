@@ -11,6 +11,8 @@
 
 #include "generated/abstract{{interface|lower}}.h"
 
+{{interface|open_ns}}
+
 class {{class}} : public Abstract{{interface}}
 {
     Q_OBJECT
@@ -20,3 +22,6 @@ public:
 
     static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0);
 };
+
+
+{{interface|close_ns}}

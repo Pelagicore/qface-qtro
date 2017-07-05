@@ -14,6 +14,8 @@ from qface.watch import monitor
 from qface.shell import sh
 import qface.filters
 
+import socket
+url = 'tcp://{0}:56432'.format(socket.gethostbyname(socket.gethostname()))
 
 here = Path(__file__).dirname()
 
@@ -37,12 +39,16 @@ def run(src, dst):
     generator.register_filter('signalName', Filters.signalName)
     generator.register_filter('parameters', Filters.parameters)
     generator.register_filter('signature', Filters.signature)
+    generator.register_filter('open_ns', Filters.open_ns)
+    generator.register_filter('close_ns', Filters.close_ns)
+    generator.register_filter('using_ns', Filters.using_ns)
 
     ctx = {
         'dst': dst,
         'system': system,
         'classPrefix': classPrefix,
-        'project': project
+        'project': project,
+        'url': url,
     }
 
     ###############################################################
@@ -53,9 +59,14 @@ def run(src, dst):
     generator.destination = dst
 
     generator.write('{{project}}.pro', 'project.pro', ctx)
+    generator.write('lib{{project}}.pro', 'libproject.pro', ctx)
+    generator.write('{{project}}.pri', 'project.pri', ctx)
+
     generator.write('.qmake.conf', 'qmake.conf', ctx)
     generator.write('servers/servers.pro', 'servers/servers.pro', ctx)
     generator.write('plugins/plugins.pro', 'plugins/plugins.pro', ctx)
+    generator.write('shared/project.ini', 'shared/project.ini', ctx)
+    generator.write('shared/project.qrc', 'shared/project.qrc', ctx)
 
     ###############################################################
     # generate shared code per module
@@ -75,6 +86,7 @@ def run(src, dst):
         generator.destination = dst
 
         generator.write('{{module|lower|replace(".", "-")}}.pro', 'plugins/plugin/plugin.pro', ctx)
+        generator.write('{{module|lower|replace(".", "-")}}.pri', 'plugins/plugin/module.pri', ctx)
         generator.write('qmldir', 'plugins/plugin/qmldir', ctx)
         generator.write('plugin.cpp', 'plugins/plugin/plugin.cpp', ctx)
         generator.write('plugin.h', 'plugins/plugin/plugin.h', ctx)

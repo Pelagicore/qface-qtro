@@ -23,3 +23,5 @@ SOURCES += $$PWD/{{interface|lower}}abstractsource.cpp
 SOURCES += $$PWD/{{struct|lower}}model.cpp
 {% endfor %}
 SOURCES += $$PWD/variantmodel.cpp
+
+RESOURCES += $$SOURCE_DIR/shared/project.qrc

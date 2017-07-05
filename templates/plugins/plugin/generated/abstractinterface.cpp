@@ -9,6 +9,8 @@
 #include <QtQml>
 #include "core.h"
 
+{{interface|using_ns}}
+
 /*!
    \qmltype {{interface}}
    \inqmlmodule {{module}}

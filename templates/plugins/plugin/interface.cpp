@@ -10,6 +10,7 @@
 #include <QtQml>
 
 
+{{interface|using_ns}}
 /*!
     \inqmlmodule {{module}} 1.0
  */

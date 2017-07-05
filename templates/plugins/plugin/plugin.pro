@@ -6,20 +6,10 @@ TARGET = {{module|lower}}
 
 uri = {{module}}
 
-{% for interface in module.interfaces %}
-HEADERS += {{interface|lower}}.h
-{% endfor %}
 HEADERS += plugin.h
-
-{% for interface in module.interfaces %}
-SOURCES += {{interface|lower}}.cpp
-{% endfor %}
 SOURCES += plugin.cpp
 
-include( generated/generated.pri )
-include( docs/docs.pri )
-
-REPC_REPLICA += $$SOURCE_DIR/shared/{{module}}.rep
+include( {{module|lower|replace(".", "-")}}.pri )
 
 DISTFILES = qmldir
 

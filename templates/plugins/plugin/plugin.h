@@ -7,6 +7,8 @@
 
 #include <QtQml>
 
+{{module|open_ns}}
+
 class Plugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
@@ -18,3 +20,5 @@ public:
     void registerTypes(const char *uri);
 private:
 };
+
+{{module|close_ns}}

@@ -8,9 +8,10 @@
 
 #include <QtQml>
 
-{% for interface in module.interfaces %}
-#include "{{interface|lower}}.h"
-{% endfor %}
+#include "generated/core.h"
+
+
+{{module|using_ns}}
 
 Plugin::Plugin(QObject *parent)
     : QQmlExtensionPlugin(parent)
@@ -25,13 +26,5 @@ void Plugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
 void Plugin::registerTypes(const char *uri)
 {
-{% for interface in module.interfaces %}
-    {{interface}}::registerQmlTypes(uri, 1, 0);
-{% endfor %}
-{% for struct in module.structs %}
-    // {{struct}}::registerTypes();
-{% endfor %}
-{% for enum in module.enums %}
-    // {{enum}}::registerTypes();
-{% endfor %}
+    Core::registerTypes(uri);
 }

@@ -16,5 +16,5 @@ Project {
         directory: "."
     }
     /* List of plugin directories passed to QML runtime */
-     importPaths: [ "/Users/jryannel/temp/remotes/build/imports" ]
+     importPaths: [ "/Users/jryannel/temp/build-remotes-Desktop_Qt_5_9_1_clang_64bit-Debug/imports" ]
 }

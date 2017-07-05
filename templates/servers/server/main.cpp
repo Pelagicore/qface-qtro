@@ -22,7 +22,12 @@ void registerModel(QRemoteObjectHostBase* host, QAbstractItemModel* model, const
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    QRemoteObjectRegistryHost host(QUrl("local:{{module}}"));
+
+    QSettings settings(":/project.ini", QSettings::IniFormat);
+    settings.beginGroup("{{module}}");
+    QUrl url = QUrl(settings.value("Registry", "local:{{module}}").toString());
+
+    QRemoteObjectRegistryHost host(url);
     qDebug() << "registry at: " << host.registryUrl().toString();
 
 {% for interface in module.interfaces %}

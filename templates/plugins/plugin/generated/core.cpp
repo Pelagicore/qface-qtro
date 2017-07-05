@@ -6,12 +6,22 @@
 #include "core.h"
 
 
+{% for interface in module.interfaces %}
+#include "../{{interface|lower}}.h"
+{% endfor %}
+
+{{module|using_ns}}
+
 Core* Core::s_instance(nullptr);
 
 Core::Core(QObject *parent)
     : QObject(parent)
-    , m_node(new QRemoteObjectNode(QUrl(QStringLiteral("local:{{module}}"))))
+    , m_node(nullptr)
 {
+    QSettings settings(":/project.ini", QSettings::IniFormat);
+    settings.beginGroup("{{module}}");
+    QUrl url = QUrl(settings.value("Registry", "local:{{module}}").toString());
+    m_node = new QRemoteObjectNode(url);
     qDebug() << "Core::Core()";
     connect(m_node, &QRemoteObjectNode::error, this, &Core::reportError);
 
@@ -37,4 +47,11 @@ QRemoteObjectNode* Core::node() const
 void Core::reportError(QRemoteObjectNode::ErrorCode code)
 {
     qDebug() << "Error: " << code;
+}
+
+void Core::registerTypes(const char *uri)
+{
+{% for interface in module.interfaces %}
+    {{interface}}::registerQmlTypes(uri, 1, 0);
+{% endfor %}
 }

@@ -3,4 +3,4 @@ TEMPLATE = subdirs
 SUBDIRS += plugins
 SUBDIRS += servers
 
-OTHER_FILES += .qmake.conf
+include( {{project}}.pri )
