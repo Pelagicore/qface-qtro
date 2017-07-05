@@ -1,4 +1,3 @@
-{# Copyright (c) Pelagicore AB 2016 #}
 {% set class = 'Abstract{0}'.format(interface) %}
 /****************************************************************************
 ** This is an auto-generated file.

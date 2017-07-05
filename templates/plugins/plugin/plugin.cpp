@@ -1,4 +1,3 @@
-{# Copyright (c) Pelagicore AB 2016 #}
 {% set module_name = 'Qml{0}Module'.format(module.module_name) %}
 /****************************************************************************
 ** This is an auto-generated file.
@@ -12,13 +11,6 @@
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}.h"
 {% endfor %}
-// {% for struct in module.structs %}
-// #include "generated/{{struct|lower}}.h"
-// {% endfor %}
-// {% for enum in module.enums %}
-// #include "generated/{{enum|lower}}.h"
-// {% endfor %}
-
 
 Plugin::Plugin(QObject *parent)
     : QQmlExtensionPlugin(parent)

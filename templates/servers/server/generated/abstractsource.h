@@ -1,4 +1,9 @@
 {% set class = '{0}AbstractSource'.format(interface) %}
+/****************************************************************************
+** This is an auto-generated file.
+** Do not edit! All changes made to it will be lost.
+****************************************************************************/
+
 #ifndef {{class|upper}}_H
 #define {{class|upper}}_H
 

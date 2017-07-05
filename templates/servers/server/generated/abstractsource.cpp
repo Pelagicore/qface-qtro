@@ -1,4 +1,8 @@
 {% set class = '{0}AbstractSource'.format(interface) %}
+/****************************************************************************
+** This is an auto-generated file.
+** Do not edit! All changes made to it will be lost.
+****************************************************************************/
 
 #include "{{interface|lower}}abstractsource.h"
 

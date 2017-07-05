@@ -1,4 +1,3 @@
-{# Copyright (c) Pelagicore AB 2016 #}
 {% set class = 'VariantModel' %}
 /****************************************************************************
 ** This is an auto-generated file.
