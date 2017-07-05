@@ -24,6 +24,7 @@ log = logging.getLogger(__file__)
 
 def run(src, dst):
     log.debug('run {0} {1}'.format(src, dst))
+    project = Path(dst).name
     classPrefix = ''
     system = FileSystem.parse(src)
     generator = Generator(search_path=here / 'templates')
@@ -36,18 +37,24 @@ def run(src, dst):
     generator.register_filter('signalName', Filters.signalName)
     generator.register_filter('parameters', Filters.parameters)
     generator.register_filter('signature', Filters.signature)
-    ctx = {'dst': dst, 'system': system, 'classPrefix': classPrefix}
+
+    ctx = {
+        'dst': dst,
+        'system': system,
+        'classPrefix': classPrefix,
+        'project': project
+    }
 
     ###############################################################
     # generate remotes
     ###############################################################
 
-    dst = generator.apply('{{dst}}/remotes', ctx)
+    dst = generator.apply('{{dst}}', ctx)
     generator.destination = dst
 
-    generator.write('remotes.pro', 'remotes.pro', ctx)
+    generator.write('{{project}}.pro', 'project.pro', ctx)
     generator.write('.qmake.conf', 'qmake.conf', ctx)
-    generator.write('servers/servers.pro', 'server/servers.pro', ctx)
+    generator.write('servers/servers.pro', 'servers/servers.pro', ctx)
     generator.write('plugins/plugins.pro', 'plugins/plugins.pro', ctx)
 
     ###############################################################
@@ -64,46 +71,26 @@ def run(src, dst):
         log.debug('generate code for module %s', module)
 
         ctx.update({'module': module})
-        dst = generator.apply('{{dst}}/remotes/plugins/{{module|lower|replace(".", "-")}}', ctx)
+        dst = generator.apply('{{dst}}/plugins/{{module|lower|replace(".", "-")}}', ctx)
         generator.destination = dst
 
-        generator.write('{{module|lower|replace(".", "-")}}.pro', 'plugins/plugin.pro', ctx)
-        generator.write('qmldir', 'plugins/qmldir', ctx)
-        generator.write('plugin.cpp', 'plugins/plugin.cpp', ctx)
-        generator.write('plugin.h', 'plugins/plugin.h', ctx)
-        generator.write('generated/core.h', 'plugins/core.h', ctx)
-        generator.write('generated/core.cpp', 'plugins/core.cpp', ctx)
-        generator.write('generated/generated.pri', 'plugins/generated.pri', ctx)
-        # generator.write('generated/variantmodel.h', 'shared/variantmodel.h', ctx)
-        # generator.write('generated/variantmodel.cpp', 'shared/variantmodel.cpp', ctx)
-        generator.write('docs/plugin.qdocconf', 'plugins/plugin.qdocconf', ctx)
-        generator.write('docs/plugin-project.qdocconf', 'plugins/plugin-project.qdocconf', ctx)
-        generator.write('docs/docs.pri', 'plugins/docs.pri', ctx)
+        generator.write('{{module|lower|replace(".", "-")}}.pro', 'plugins/plugin/plugin.pro', ctx)
+        generator.write('qmldir', 'plugins/plugin/qmldir', ctx)
+        generator.write('plugin.cpp', 'plugins/plugin/plugin.cpp', ctx)
+        generator.write('plugin.h', 'plugins/plugin/plugin.h', ctx)
+        generator.write('docs/plugin.qdocconf', 'plugins/plugin/plugin.qdocconf', ctx)
+        generator.write('docs/plugin-project.qdocconf', 'plugins/plugin/plugin-project.qdocconf', ctx)
+        generator.write('docs/docs.pri', 'plugins/plugin/docs.pri', ctx)
+        generator.write('generated/generated.pri', 'plugins/plugin/generated/generated.pri', ctx)
+        generator.write('generated/core.h', 'plugins/plugin/generated/core.h', ctx)
+        generator.write('generated/core.cpp', 'plugins/plugin/generated/core.cpp', ctx)
         for interface in module.interfaces:
             log.debug('generate code for interface %s', interface)
             ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}.h', 'plugins/interface.h', ctx)
-            generator.write('{{interface|lower}}.cpp', 'plugins/interface.cpp', ctx)
-            generator.write('generated/abstract{{interface|lower}}.h', 'plugins/abstractinterface.h', ctx)
-            generator.write('generated/abstract{{interface|lower}}.cpp', 'plugins/abstractinterface.cpp', ctx)
-        # for struct in module.structs:
-        #     log.debug('generate code for struct %s', struct)
-        #     ctx.update({'struct': struct})
-        #     generator.write('generated/{{struct|lower}}.h', 'shared/struct.h', ctx)
-        #     generator.write('generated/{{struct|lower}}.cpp', 'shared/struct.cpp', ctx)
-        #     generator.write('generated/{{struct|lower}}model.h', 'shared/structmodel.h', ctx)
-        #     generator.write('generated/{{struct|lower}}model.cpp', 'shared/structmodel.cpp', ctx)
-
-        # for enum in module.enums:
-        #     log.debug('generate code for enum %s', enum)
-        #     ctx.update({'enum': enum})
-        #     generator.write('generated/{{enum|lower}}.h', 'shared/enum.h', ctx)
-
-        # # client side
-        # for interface in module.interfaces:
-        #     log.debug('generate remote objects code')
-        #     ctx.update({'interface': interface})
-        #     generator.write('generated/{{interface|lower}}replica.h', 'qtro/replica.h', ctx)
+            generator.write('{{interface|lower}}.h', 'plugins/plugin/interface.h', ctx)
+            generator.write('{{interface|lower}}.cpp', 'plugins/plugin/interface.cpp', ctx)
+            generator.write('generated/abstract{{interface|lower}}.h', 'plugins/plugin/generated/abstractinterface.h', ctx)
+            generator.write('generated/abstract{{interface|lower}}.cpp', 'plugins/plugin/generated/abstractinterface.cpp', ctx)
 
     ###############################################################
     # generate server per module
@@ -112,33 +99,26 @@ def run(src, dst):
         log.debug('generate code for server module %s', module)
         ctx.update({'module': module})
 
-        dst = generator.apply('{{dst}}/remotes/servers/{{module|lower|replace(".", "-")}}', ctx)
+        dst = generator.apply('{{dst}}/servers/{{module|lower|replace(".", "-")}}', ctx)
         generator.destination = dst
 
-        generator.write('{{module|lower|replace(".", "-")}}.pro', 'server/server.pro', ctx)
-        generator.write('main.cpp', 'server/main.cpp', ctx)
-        generator.write('generated/generated.pri', 'server/generated.pri', ctx)
-        generator.write('generated/variantmodel.h', 'shared/variantmodel.h', ctx)
-        generator.write('generated/variantmodel.cpp', 'shared/variantmodel.cpp', ctx)
+        generator.write('{{module|lower|replace(".", "-")}}.pro', 'servers/server/server.pro', ctx)
+        generator.write('main.cpp', 'servers/server/main.cpp', ctx)
+        generator.write('generated/generated.pri', 'servers/server/generated/generated.pri', ctx)
+        generator.write('generated/variantmodel.h', 'servers/server/generated/variantmodel.h', ctx)
+        generator.write('generated/variantmodel.cpp', 'servers/server/generated/variantmodel.cpp', ctx)
         # server side
         for interface in module.interfaces:
             ctx.update({'interface': interface})
-            # generator.write('generated/{{interface|lower}}sourceapi.h', 'server/sourceapi.h', ctx)
-            generator.write('generated/{{interface|lower}}abstractsource.h', 'server/abstractsource.h', ctx)
-            generator.write('generated/{{interface|lower}}abstractsource.cpp', 'server/abstractsource.cpp', ctx)
-            generator.write('{{interface|lower}}service.h', 'server/service.h', ctx, preserve=True)
-            generator.write('{{interface|lower}}service.cpp', 'server/service.cpp', ctx, preserve=True)
+            generator.write('{{interface|lower}}service.h', 'servers/server/service.h', ctx, preserve=True)
+            generator.write('{{interface|lower}}service.cpp', 'servers/server/service.cpp', ctx, preserve=True)
+            generator.write('generated/{{interface|lower}}abstractsource.h', 'servers/server/generated/abstractsource.h', ctx)
+            generator.write('generated/{{interface|lower}}abstractsource.cpp', 'servers/server/generated/abstractsource.cpp', ctx)
         for struct in module.structs:
             log.debug('generate code for struct %s', struct)
             ctx.update({'struct': struct})
-        #     generator.write('generated/{{struct|lower}}.h', 'shared/struct.h', ctx)
-        #     generator.write('generated/{{struct|lower}}.cpp', 'shared/struct.cpp', ctx)
-            generator.write('generated/{{struct|lower}}model.h', 'shared/structmodel.h', ctx)
-            generator.write('generated/{{struct|lower}}model.cpp', 'shared/structmodel.cpp', ctx)
-        # for enum in module.enums:
-        #     log.debug('generate code for enum %s', enum)
-        #     ctx.update({'enum': enum})
-        #     generator.write('generated/{{enum|lower}}.h', 'shared/enum.h', ctx)
+            generator.write('generated/{{struct|lower}}model.h', 'servers/server/generated/structmodel.h', ctx)
+            generator.write('generated/{{struct|lower}}model.cpp', 'servers/server/generated/structmodel.cpp', ctx)
 
 
 @click.command()
