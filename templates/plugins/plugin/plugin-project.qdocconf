@@ -1,4 +1,4 @@
-{% set module_name = module|lower|replace(".", "_")%}
+{% set module_name = module|identifier %}
 project = {{module}}
 description = {{module|upper}} Reference Documentation
 version = 1.0

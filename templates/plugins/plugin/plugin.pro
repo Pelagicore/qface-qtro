@@ -9,7 +9,7 @@ uri = {{module}}
 HEADERS += plugin.h
 SOURCES += plugin.cpp
 
-include( {{module|lower|replace(".", "-")}}.pri )
+include( {{module|identifier}}.pri )
 
 DISTFILES = qmldir
 

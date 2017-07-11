@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    QSettings settings(":/project.ini", QSettings::IniFormat);
+    QSettings settings(":/server.conf", QSettings::IniFormat);
     settings.beginGroup("{{module}}");
     QUrl url = QUrl(settings.value("Registry", "local:{{module}}").toString());
 

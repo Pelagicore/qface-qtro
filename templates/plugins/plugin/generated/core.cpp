@@ -18,7 +18,7 @@ Core::Core(QObject *parent)
     : QObject(parent)
     , m_node(nullptr)
 {
-    QSettings settings(":/project.ini", QSettings::IniFormat);
+    QSettings settings(":/server.conf", QSettings::IniFormat);
     settings.beginGroup("{{module}}");
     QUrl url = QUrl(settings.value("Registry", "local:{{module}}").toString());
     m_node = new QRemoteObjectNode(url);

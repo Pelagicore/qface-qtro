@@ -1,6 +1,5 @@
 TEMPLATE = subdirs
 
 {% for module in system.modules %}
-SUBDIRS += {{module|identifier}}
+SUBDIRS += {{module|lower|replace(".", "-")}}
 {% endfor %}
-

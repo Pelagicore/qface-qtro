@@ -14,6 +14,8 @@ from qface.watch import monitor
 from qface.shell import sh
 import qface.filters
 
+from jinja2 import environmentfilter
+
 import socket
 url = 'tcp://{0}:56432'.format(socket.gethostbyname(socket.gethostname()))
 
@@ -22,6 +24,43 @@ here = Path(__file__).dirname()
 logging.config.dictConfig(yaml.load(open(here / 'log.yaml')))
 
 log = logging.getLogger(__file__)
+
+
+class CustomFilters:
+
+    @staticmethod
+    def defaultValue(symbol):
+        prefix = Filters.classPrefix
+        t = symbol.type  # type: qface.domain.TypeSymbol
+        if t.is_enum:
+            value = next(iter(t.reference.members))
+            return '{0}{1}Enum::{2}'.format(prefix, symbol.type, value)
+        return Filters.defaultValue(symbol)
+
+    @staticmethod
+    def parameterType(symbol):
+        prefix = Filters.classPrefix
+        if symbol.type.is_enum:
+            return '{0}{1}Enum::{1} {2}'.format(prefix, symbol.type, symbol)
+        Filters.parameterType(symbol)
+
+    @staticmethod
+    def returnType(symbol):
+        prefix = Filters.classPrefix
+        if symbol.type.is_enum:
+            return '{0}{1}Enum::{1}'.format(prefix, symbol.type)
+        return Filters.returnType(symbol)
+
+    @staticmethod
+    @environmentfilter
+    def parameters(env, s, filter=None, spaces=True):
+        Filters.parameters(env, CustomFilters.parameterType, spaces)
+
+    @staticmethod
+    def signature(s, expand=False, filter=None):
+        if not filter:
+            filter = CustomFilters.returnType
+        Filters.signature(s, expand, filter)
 
 
 def run(src, dst):
@@ -42,6 +81,7 @@ def run(src, dst):
     generator.register_filter('open_ns', Filters.open_ns)
     generator.register_filter('close_ns', Filters.close_ns)
     generator.register_filter('using_ns', Filters.using_ns)
+    generator.register_filter('identifier', Filters.identifier)
 
     ctx = {
         'dst': dst,
@@ -65,15 +105,9 @@ def run(src, dst):
     generator.write('.qmake.conf', 'qmake.conf', ctx)
     generator.write('servers/servers.pro', 'servers/servers.pro', ctx)
     generator.write('plugins/plugins.pro', 'plugins/plugins.pro', ctx)
-    generator.write('shared/project.ini', 'shared/project.ini', ctx)
+    generator.write('engines/engines.pro', 'engines/engines.pro', ctx)
+    generator.write('shared/server.conf', 'shared/server.conf', ctx)
     generator.write('shared/project.qrc', 'shared/project.qrc', ctx)
-
-    ###############################################################
-    # generate shared code per module
-    ###############################################################
-    for module in system.modules:
-        ctx.update({'module': module})
-        generator.write('shared/{{module}}.rep', 'shared/repc.rep', ctx)
 
     ###############################################################
     # generate plugins per module
@@ -82,11 +116,14 @@ def run(src, dst):
         log.debug('generate code for module %s', module)
 
         ctx.update({'module': module})
-        dst = generator.apply('{{dst}}/plugins/{{module|lower|replace(".", "-")}}', ctx)
+        dst = generator.apply('{{dst}}/plugins/{{module|identifier}}', ctx)
         generator.destination = dst
 
-        generator.write('{{module|lower|replace(".", "-")}}.pro', 'plugins/plugin/plugin.pro', ctx)
-        generator.write('{{module|lower|replace(".", "-")}}.pri', 'plugins/plugin/module.pri', ctx)
+        # shared rep file per module
+        generator.write('shared/{{module}}.rep', 'shared/repc.rep', ctx)
+
+        generator.write('{{module|identifier}}.pro', 'plugins/plugin/plugin.pro', ctx)
+        generator.write('{{module|identifier}}.pri', 'plugins/plugin/module.pri', ctx)
         generator.write('qmldir', 'plugins/plugin/qmldir', ctx)
         generator.write('plugin.cpp', 'plugins/plugin/plugin.cpp', ctx)
         generator.write('plugin.h', 'plugins/plugin/plugin.h', ctx)
@@ -111,10 +148,10 @@ def run(src, dst):
         log.debug('generate code for server module %s', module)
         ctx.update({'module': module})
 
-        dst = generator.apply('{{dst}}/servers/{{module|lower|replace(".", "-")}}', ctx)
+        dst = generator.apply('{{dst}}/servers/{{module|identifier}}', ctx)
         generator.destination = dst
 
-        generator.write('{{module|lower|replace(".", "-")}}.pro', 'servers/server/server.pro', ctx)
+        generator.write('{{module|identifier}}.pro', 'servers/server/server.pro', ctx)
         generator.write('main.cpp', 'servers/server/main.cpp', ctx)
         generator.write('generated/generated.pri', 'servers/server/generated/generated.pri', ctx)
         generator.write('generated/variantmodel.h', 'servers/server/generated/variantmodel.h', ctx)
@@ -131,6 +168,20 @@ def run(src, dst):
             ctx.update({'struct': struct})
             generator.write('generated/{{struct|lower}}model.h', 'servers/server/generated/structmodel.h', ctx)
             generator.write('generated/{{struct|lower}}model.cpp', 'servers/server/generated/structmodel.cpp', ctx)
+
+    # generate engine code
+    for module in system.modules:
+        log.debug('generate code for the engine modules')
+        ctx.update({'module': module})
+        dst = generator.apply('{{dst}}/engines/{{module|identifier}}', ctx)
+        generator.destination = dst
+        generator.write('{{module|identifier}}.pro', 'engines/engine/engine.pro', ctx)
+        generator.write('{{module|identifier}}.pri', 'engines/engine/engine.pri', ctx)
+        for interface in module.interfaces:
+            ctx.update({'interface': interface})
+            generator.write('{{interface|lower}}engine.h', 'engines/engine/engine.h', ctx, preserve=True)
+            generator.write('{{interface|lower}}engine.cpp', 'engines/engine/engine.cpp', ctx, preserve=True)
+
 
 
 @click.command()
