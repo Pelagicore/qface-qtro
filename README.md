@@ -1,12 +1,11 @@
 # QFace QtRemoteObjects Generator
 
-This generator does generate a complete micro service solution. It does so by
+**Work In Progress**
+
+This generator tries to generate a complete micro service solution. It does so by
 reading the QFace IDL file and generating a client side plugin and a service
 for each interface. Each module will be bundled into one server with an own
 service registry where all interfaces from the module will be available.
-
-interface => service
-module => server => plugin
 
 As a user you can simply import the QML generated plugin and ensure the server
 side generated stub is being implemented.

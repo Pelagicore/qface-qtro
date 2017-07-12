@@ -21,9 +21,10 @@ url = 'tcp://{0}:56432'.format(socket.gethostbyname(socket.gethostname()))
 
 here = Path(__file__).dirname()
 
-logging.config.dictConfig(yaml.load(open(here / 'log.yaml')))
-
-log = logging.getLogger(__file__)
+logging.basicConfig()
+with open('log.yaml', 'r') as fp:
+    logging.config.dictConfig(yaml.load(fp))
+log = logging.getLogger(__name__)
 
 
 class CustomFilters:

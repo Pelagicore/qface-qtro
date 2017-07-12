@@ -1,2 +1,1 @@
-qface
-jinja=2.7.3
+qface>=1.3.1
