@@ -1,0 +1,24 @@
+module org.example.ping 1.0
+
+interface Ping {
+    int counter;
+    Status status;
+    void ping(string message);
+    void updateStatus(Status status);
+    signal pinged(Message message)
+    void echo(string msg);
+    model<Message> messages;
+    model<string> strings;
+}
+
+enum Status {
+    Null,
+    Ready,
+    Loading,
+    Error
+}
+
+struct Message {
+    string message;
+    string source;
+}
