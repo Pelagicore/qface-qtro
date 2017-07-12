@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='qface-qtro',
-    version='1.1',
+    version='1.2',
     description='Generator based on the QFace library for QtRemoteObjects',
     url='https://github.com/Pelagicore/qface-qtro',
     author='jryannel',
