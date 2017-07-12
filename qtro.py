@@ -107,7 +107,6 @@ def run(src, dst):
     generator.write('.qmake.conf', 'qmake.conf', ctx)
     generator.write('servers/servers.pro', 'servers/servers.pro', ctx)
     generator.write('plugins/plugins.pro', 'plugins/plugins.pro', ctx)
-    generator.write('engines/engines.pro', 'engines/engines.pro', ctx)
     generator.write('shared/server.conf', 'shared/server.conf', ctx)
     generator.write('shared/project.qrc', 'shared/project.qrc', ctx)
 
@@ -181,11 +180,11 @@ def run(src, dst):
         ctx.update({'module': module})
         dst = generator.apply('{{dst}}/servers/{{module|identifier}}/engine', ctx)
         generator.destination = dst
-        generator.write('engine.pri', 'engines/engine/engine.pri', ctx)
+        generator.write('engine.pri', 'servers/server/engine/engine.pri', ctx)
         for interface in module.interfaces:
             ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}engine.h', 'engines/engine/engine.h', ctx, preserve=True)
-            generator.write('{{interface|lower}}engine.cpp', 'engines/engine/engine.cpp', ctx, preserve=True)
+            generator.write('{{interface|lower}}engine.h', 'servers/server/engine/engine.h', ctx, preserve=True)
+            generator.write('{{interface|lower}}engine.cpp', 'servers/server/engine/engine.cpp', ctx, preserve=True)
 
 
 
