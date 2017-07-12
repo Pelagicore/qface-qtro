@@ -42,7 +42,7 @@ class CustomFilters:
         prefix = Filters.classPrefix
         if symbol.type.is_enum:
             return '{0}{1}Enum::{1} {2}'.format(prefix, symbol.type, symbol)
-        Filters.parameterType(symbol)
+        return Filters.parameterType(symbol)
 
     @staticmethod
     def returnType(symbol):
@@ -54,13 +54,15 @@ class CustomFilters:
     @staticmethod
     @environmentfilter
     def parameters(env, s, filter=None, spaces=True):
-        Filters.parameters(env, CustomFilters.parameterType, spaces)
+        if not filter:
+            filter = CustomFilters.parameterType
+        return Filters.parameters(env, s, filter, spaces)
 
     @staticmethod
     def signature(s, expand=False, filter=None):
         if not filter:
             filter = CustomFilters.returnType
-        Filters.signature(s, expand, filter)
+        return Filters.signature(s, expand, filter)
 
 
 def run(src, dst):
@@ -70,14 +72,14 @@ def run(src, dst):
     system = FileSystem.parse(src)
     generator = Generator(search_path=here / 'templates')
     Filters.classPrefix = classPrefix
-    generator.register_filter('returnType', Filters.returnType)
-    generator.register_filter('parameterType', Filters.parameterType)
-    generator.register_filter('defaultValue', Filters.defaultValue)
+    generator.register_filter('defaultValue', CustomFilters.defaultValue)
+    generator.register_filter('returnType', CustomFilters.returnType)
+    generator.register_filter('parameterType', CustomFilters.parameterType)
+    generator.register_filter('parameters', CustomFilters.parameters)
+    generator.register_filter('signature', CustomFilters.signature)
     generator.register_filter('parse_doc', parse_doc)
     generator.register_filter('hash', qface.filters.hash)
     generator.register_filter('signalName', Filters.signalName)
-    generator.register_filter('parameters', Filters.parameters)
-    generator.register_filter('signature', Filters.signature)
     generator.register_filter('open_ns', Filters.open_ns)
     generator.register_filter('close_ns', Filters.close_ns)
     generator.register_filter('using_ns', Filters.using_ns)
@@ -110,18 +112,22 @@ def run(src, dst):
     generator.write('shared/project.qrc', 'shared/project.qrc', ctx)
 
     ###############################################################
+    # generate shared code per module
+    ###############################################################
+    for module in system.modules:
+        ctx.update({'module': module})
+        generator.write('shared/{{module}}.rep', 'shared/repc.rep', ctx)
+
+    ###############################################################
     # generate plugins per module
     ###############################################################
     for module in system.modules:
         log.debug('generate code for module %s', module)
-
         ctx.update({'module': module})
         dst = generator.apply('{{dst}}/plugins/{{module|identifier}}', ctx)
         generator.destination = dst
 
         # shared rep file per module
-        generator.write('shared/{{module}}.rep', 'shared/repc.rep', ctx)
-
         generator.write('{{module|identifier}}.pro', 'plugins/plugin/plugin.pro', ctx)
         generator.write('{{module|identifier}}.pri', 'plugins/plugin/module.pri', ctx)
         generator.write('qmldir', 'plugins/plugin/qmldir', ctx)
@@ -173,10 +179,9 @@ def run(src, dst):
     for module in system.modules:
         log.debug('generate code for the engine modules')
         ctx.update({'module': module})
-        dst = generator.apply('{{dst}}/engines/{{module|identifier}}', ctx)
+        dst = generator.apply('{{dst}}/servers/{{module|identifier}}/engine', ctx)
         generator.destination = dst
-        generator.write('{{module|identifier}}.pro', 'engines/engine/engine.pro', ctx)
-        generator.write('{{module|identifier}}.pri', 'engines/engine/engine.pri', ctx)
+        generator.write('engine.pri', 'engines/engine/engine.pri', ctx)
         for interface in module.interfaces:
             ctx.update({'interface': interface})
             generator.write('{{interface|lower}}engine.h', 'engines/engine/engine.h', ctx, preserve=True)

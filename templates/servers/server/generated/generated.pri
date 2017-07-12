@@ -18,4 +18,10 @@ SOURCES += $$PWD/{{struct|lower}}model.cpp
 {% endfor %}
 SOURCES += $$PWD/variantmodel.cpp
 
+OTHER_FILES += $$SOURCE_DIR/shared/{{module}}.rep
+
+OTHER_FILES += $$SOURCE_DIR/shared/server.conf
 RESOURCES += $$SOURCE_DIR/shared/project.qrc
+
+REPC_SOURCE += $$SOURCE_DIR/shared/{{module}}.rep
+

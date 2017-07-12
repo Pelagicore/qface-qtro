@@ -20,5 +20,8 @@ SOURCES += {{interface|lower}}service.cpp
 {% endfor %}
 SOURCES += main.cpp
 
+include ( engine/engine.pri )
 
-REPC_SOURCE += $$SOURCE_DIR/shared/{{module}}.rep
+
+
+

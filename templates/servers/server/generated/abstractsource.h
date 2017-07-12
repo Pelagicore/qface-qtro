@@ -1,4 +1,7 @@
 {% set class = '{0}AbstractSource'.format(interface) %}
+{% set models = interface.properties|selectattr('is_model')|list %}
+{% set primitive_models = interface.properties|selectattr('is_primitive_model')|list %}
+{% set complex_models = interface.properties|selectattr('is_complex_model')|list %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -10,34 +13,35 @@
 #include <QtCore>
 #include <QtRemoteObjects>
 #include "rep_{{module}}_source.h"
-
-{% for property in interface.properties %}
-{% if property.type.is_model and property.type.nested.is_complex %}
+{% for property in complex_models %}
 #include "{{property.type.nested|lower}}model.h"
-{% endif %}
 {% endfor %}
 #include "variantmodel.h"
+
+class {{interface}}Engine;
 
 class {{class}} : public {{interface}}SimpleSource
 {
     Q_OBJECT
-{% for property in interface.properties if property.type.is_model %}
-{% if property.type.nested.is_primitive %}
+{% for property in primitive_models %}
     Q_PROPERTY(VariantModel* {{property}} READ {{property}} CONSTANT)
-{% else %}
+{% endfor %}
+{% for property in complex_models %}
     Q_PROPERTY({{property.type.nested|upperfirst}}Model* {{property}} READ {{property}} CONSTANT)
-{% endif %}
 {% endfor %}
 
 public:
     explicit {{class}}(QObject *parent = nullptr);
 
-{% for property in interface.properties if property.type.is_model %}
-{% if property.type.nested.is_primitive %}
+    virtual void setupEngineConnections();
+
+    {{interface}}Engine* engine() const;
+
+{% for property in primitive_models %}
     virtual VariantModel* {{property}}() const;
-{% else %}
+{% endfor %}
+{% for property in complex_models %}
     virtual {{property.type.nested|upperfirst}}Model* {{property}}() const;
-{% endif %}
 {% endfor %}
 
 public Q_SLOTS:
@@ -45,13 +49,14 @@ public Q_SLOTS:
     virtual {{operation|returnType}} {{operation}}({{operation|parameters}});
 {% endfor %}
 private:
-{% for property in interface.properties if property.type.is_model %}
-{% if property.type.nested.is_primitive %}
+{% for property in interface.properties %}
+{% if property.is_primitive_model %}
     VariantModel* m_{{property}};
-{% else %}
+{% elif property.is_complex_model %}
     {{property.type.nested|upperfirst}}Model* m_{{property}};
 {% endif %}
 {% endfor %}
+    {{interface}}Engine *m_engine;
 };
 
 #endif // {{class|upper}}_H
