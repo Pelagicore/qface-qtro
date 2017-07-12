@@ -19,7 +19,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        '': ['*.*']
+        '': ['*']
     },
     install_requires=[
         'qface>=1.3.1',
