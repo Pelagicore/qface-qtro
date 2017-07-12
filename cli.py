@@ -17,6 +17,7 @@ from livereload import Server, shell
 here = os.path.dirname(__file__)
 
 logging.basicConfig()
+log_config = Path('log.yaml')
 if log_config.exists():
     logging.config.dictConfig(yaml.load(log_config.open('r')))
 log = logging.getLogger(__name__)
