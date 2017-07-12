@@ -22,8 +22,11 @@ url = 'tcp://{0}:56432'.format(socket.gethostbyname(socket.gethostname()))
 here = Path(__file__).dirname()
 
 logging.basicConfig()
-with open('log.yaml', 'r') as fp:
-    logging.config.dictConfig(yaml.load(fp))
+
+log_config = Path('log.yaml')
+
+if log_config.exists():
+    logging.config.dictConfig(yaml.load(log_config.open('r')))
 log = logging.getLogger(__name__)
 
 
