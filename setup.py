@@ -1,12 +1,18 @@
 from setuptools import setup, find_packages
+from path import Path
+from qtro import __about__ as about
+
+here = Path(__file__).abspath().dirname()
+readme = Path(here / 'README.md').text()
 
 setup(
-    name='qface-qtro',
-    version='1.3',
-    description='Generator based on the QFace library for QtRemoteObjects',
-    url='https://github.com/Pelagicore/qface-qtro',
-    author='jryannel',
-    author_email='juergen@ryannel.org',
+    name=about.__title__,
+    version=about.__version__,
+    description=about.__description__,
+    long_description=readme,
+    url=about.__url__,
+    author=about.__author__,
+    author_email=about.__author_email__,
     license='MIT',
     classifiers=[
         'Development Status :: 3 - Alpha',
