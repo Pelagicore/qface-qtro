@@ -1,5 +1,5 @@
 __title__ = 'qface-qtro'
-__version__ = '1.3.3'
+__version__ = '1.3.4'
 __description__ = 'Generator based on the QFace library for QtRemoteObjects'
 __url__ = 'https://github.com/Pelagicore/qface-qtro'
 __author__ = 'jryannel'
