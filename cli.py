@@ -104,8 +104,8 @@ def upload():
 @cli.command()
 def pack():
     Path('build').rmtree_p()
-
-    sh('python3 ../setup.py bdist_wheel')
+    Path('dist').rmtree_p()
+    sh('python3 setup.py bdist_wheel')
     sh('unzip -l dist/*.whl')
 
 
