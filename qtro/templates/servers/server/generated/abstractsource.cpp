@@ -23,12 +23,6 @@
 {% endfor %}
     , m_engine(new {{interface}}Engine(this))
 {
-    setupEngineConnections();
-}
-
-
-void {{class}}::setupEngineConnections()
-{
 }
 
 {{interface}}Engine* {{class}}::engine() const

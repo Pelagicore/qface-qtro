@@ -33,8 +33,6 @@ class {{class}} : public {{interface}}SimpleSource
 public:
     explicit {{class}}(QObject *parent = nullptr);
 
-    virtual void setupEngineConnections();
-
     {{interface}}Engine* engine() const;
 
 {% for property in primitive_models %}

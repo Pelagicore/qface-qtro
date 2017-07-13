@@ -16,9 +16,6 @@ import qface.filters
 
 from jinja2 import environmentfilter
 
-import socket
-url = 'tcp://{0}:56432'.format(socket.gethostbyname(socket.gethostname()))
-
 here = Path(__file__).dirname()
 
 logging.basicConfig()
@@ -94,7 +91,6 @@ def run(src, dst):
         'system': system,
         'classPrefix': classPrefix,
         'project': project,
-        'url': url,
     }
 
     ###############################################################
