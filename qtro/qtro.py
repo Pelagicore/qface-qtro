@@ -16,9 +16,6 @@ import qface.filters
 
 from jinja2 import environmentfilter
 
-import socket
-url = 'tcp://{0}:56432'.format(socket.gethostbyname(socket.gethostname()))
-
 here = Path(__file__).dirname()
 
 logging.basicConfig()
@@ -94,7 +91,6 @@ def run(src, dst):
         'system': system,
         'classPrefix': classPrefix,
         'project': project,
-        'url': url,
     }
 
     ###############################################################
@@ -170,8 +166,8 @@ def run(src, dst):
             ctx.update({'interface': interface})
             generator.write('{{interface|lower}}service.h', 'servers/server/service.h', ctx, preserve=True)
             generator.write('{{interface|lower}}service.cpp', 'servers/server/service.cpp', ctx, preserve=True)
-            generator.write('generated/{{interface|lower}}abstractsource.h', 'servers/server/generated/abstractsource.h', ctx)
-            generator.write('generated/{{interface|lower}}abstractsource.cpp', 'servers/server/generated/abstractsource.cpp', ctx)
+            generator.write('generated/{{interface|lower}}servicebase.h', 'servers/server/generated/servicebase.h', ctx)
+            generator.write('generated/{{interface|lower}}servicebase.cpp', 'servers/server/generated/servicebase.cpp', ctx)
         for struct in module.structs:
             log.debug('generate code for struct %s', struct)
             ctx.update({'struct': struct})

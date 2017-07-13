@@ -10,10 +10,10 @@
 
 #include <QtCore>
 
-#include "generated/{{interface|lower}}abstractsource.h"
+#include "generated/{{interface|lower}}servicebase.h"
 
 
-class {{class}} : public {{interface}}AbstractSource
+class {{class}} : public {{interface}}ServiceBase
 {
     Q_OBJECT
 public:

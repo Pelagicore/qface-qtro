@@ -1,4 +1,4 @@
-{% set class = '{0}AbstractSource'.format(interface) %}
+{% set class = '{0}ServiceBase'.format(interface) %}
 {% set models = interface.properties|selectattr('is_model')|list %}
 {% set primitive_models = interface.properties|selectattr('is_primitive_model')|list %}
 {% set complex_models = interface.properties|selectattr('is_complex_model')|list %}
@@ -32,8 +32,6 @@ class {{class}} : public {{interface}}SimpleSource
 
 public:
     explicit {{class}}(QObject *parent = nullptr);
-
-    virtual void setupEngineConnections();
 
     {{interface}}Engine* engine() const;
 
