@@ -97,18 +97,16 @@ def uninstall():
 
 @cli.command()
 def upload():
-    sh('twine upload package/dist/*')
-    Path('package').rmtree_p()
+    sh('twine upload dist/*')
+    Path('build').rmtree_p()
+
 
 @cli.command()
 def pack():
-    p = Path('package')
-    p.rmtree_p()
-    p.mkdir_p()
+    Path('build').rmtree_p()
 
-    with p:
-        sh('python3 ../setup.py bdist_wheel')
-        sh('unzip -l dist/*.whl')
+    sh('python3 ../setup.py bdist_wheel')
+    sh('unzip -l dist/*.whl')
 
 
 @cli.command()
