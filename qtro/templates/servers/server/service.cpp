@@ -7,6 +7,6 @@
 
 
 {{class}}::{{class}}(QObject *parent)
-    : {{interface}}AbstractSource(parent)
+    : {{interface}}ServiceBase(parent)
 {
 }
