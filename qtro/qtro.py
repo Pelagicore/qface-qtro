@@ -60,10 +60,11 @@ class CustomFilters:
         return Filters.parameters(env, s, filter, spaces)
 
     @staticmethod
-    def signature(s, expand=False, filter=None):
+    @environmentfilter
+    def signature(env, s, expand=False, filter=None):
         if not filter:
             filter = CustomFilters.returnType
-        return Filters.signature(s, expand, filter)
+        return Filters.signature(env, s, expand, filter)
 
 
 def run(src, dst):
