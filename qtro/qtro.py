@@ -30,6 +30,10 @@ log = logging.getLogger(__name__)
 class CustomFilters:
 
     @staticmethod
+    def path(symbol):
+        return symbol.qualified_name.replace('.', '/')
+
+    @staticmethod
     def defaultValue(symbol):
         prefix = Filters.classPrefix
         t = symbol.type  # type: qface.domain.TypeSymbol
@@ -86,6 +90,7 @@ def run(src, dst):
     generator.register_filter('close_ns', Filters.close_ns)
     generator.register_filter('using_ns', Filters.using_ns)
     generator.register_filter('identifier', Filters.identifier)
+    generator.register_filter('path', CustomFilters.path)
 
     ctx = {
         'dst': dst,
