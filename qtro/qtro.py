@@ -104,6 +104,7 @@ def run(src, dst):
     generator.write('{{project}}.pro', 'project.pro', ctx)
     generator.write('lib{{project}}.pro', 'libproject.pro', ctx)
     generator.write('{{project}}.pri', 'project.pri', ctx)
+    generator.write('CMakeLists.txt', 'CMakeLists.txt', ctx)
 
     generator.write('.qmake.conf', 'qmake.conf', ctx)
     generator.write('servers/servers.pro', 'servers/servers.pro', ctx)
@@ -130,6 +131,7 @@ def run(src, dst):
         # shared rep file per module
         generator.write('{{module|identifier}}.pro', 'plugins/plugin/plugin.pro', ctx)
         generator.write('{{module|identifier}}.pri', 'plugins/plugin/module.pri', ctx)
+        generator.write('CMakeLists.txt', 'plugins/plugin/CMakeLists.txt', ctx)
         generator.write('qmldir', 'plugins/plugin/qmldir', ctx)
         generator.write('plugin.cpp', 'plugins/plugin/plugin.cpp', ctx)
         generator.write('plugin.h', 'plugins/plugin/plugin.h', ctx)
@@ -158,6 +160,7 @@ def run(src, dst):
         generator.destination = dst
 
         generator.write('{{module|identifier}}.pro', 'servers/server/server.pro', ctx)
+        generator.write('CMakeLists.txt', 'servers/server/CMakeLists.txt', ctx)
         generator.write('main.cpp', 'servers/server/main.cpp', ctx)
         generator.write('generated/generated.pri', 'servers/server/generated/generated.pri', ctx)
         generator.write('generated/variantmodel.h', 'servers/server/generated/variantmodel.h', ctx)
