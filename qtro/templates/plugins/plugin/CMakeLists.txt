@@ -31,7 +31,7 @@ qt5_generate_repc(SOURCES ${CMAKE_SOURCE_DIR}/shared/{{module}}.rep REPLICA)
 add_library(${PLUGIN_NAME} SHARED ${SOURCES})
 
 
-set_target_properties(${PLUGIN_PATH} PROPERTIES
+set_target_properties(${PLUGIN_NAME} PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${PLUGIN_PATH}
     RUNTIME_OUTPUT_DIRECTORY ${PLUGIN_PATH}
 )
