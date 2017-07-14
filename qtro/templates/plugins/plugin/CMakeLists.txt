@@ -1,4 +1,4 @@
-set(PLUGIN_PATH ${PLUGINS_INSTALL_PATH}/{{module.name_parts|join('/')}})
+set(PLUGIN_PATH ${PLUGINS_INSTALL_PATH}/{{module|path}})
 set(PLUGIN_NAME {{module|identifier}}_plugin)
 
 find_package(Qt5Core REQUIRED)
