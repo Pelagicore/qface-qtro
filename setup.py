@@ -24,9 +24,6 @@ setup(
     keywords='qt ipc generator',
     packages=find_packages(),
     include_package_data=True,
-    package_data={
-        '': ['*[!*.pyc]']
-    },
     install_requires=[
         'qface>=1.3.1',
     ],
