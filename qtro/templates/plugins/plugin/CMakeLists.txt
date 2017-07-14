@@ -1,11 +1,5 @@
-project({{module|identifier}})
-
-cmake_minimum_required(VERSION 3.1)
-
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_AUTOMOC ON)
-
-set(INSTALL_PATH "${CMAKE_BINARY_DIR}/imports" CACHE STRING "Path where the plugins are deployed")
+set(PLUGIN_PATH ${PLUGINS_INSTALL_PATH}/{{module.name_parts|join('/')}})
+set(PLUGIN_NAME {{module|identifier}}_plugin)
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Qml REQUIRED)
@@ -34,17 +28,13 @@ set (HEADERS
 
 qt5_generate_repc(SOURCES ${CMAKE_SOURCE_DIR}/shared/{{module}}.rep REPLICA)
 
-add_library({{module|identifier}}_plugin SHARED ${SOURCES})
+add_library(${PLUGIN_NAME} SHARED ${SOURCES})
 
-set(OUTPUT_PATH ${INSTALL_PATH}/{{module.name_parts|join('/')}})
 
-set_target_properties({{module|identifier}}_plugin PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH}
-    RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_PATH}
+set_target_properties(${TARGET_NAME} PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${PLUGIN_PATH}
+    RUNTIME_OUTPUT_DIRECTORY ${PLUGIN_PATH}
 )
 
-message(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR})
-
-target_link_libraries({{module|identifier}}_plugin PUBLIC Qt5::Core Qt5::Qml Qt5::RemoteObjects)
-configure_file(qmldir ${OUTPUT_PATH}/qmldir COPYONLY)
-message(SOURCES ${SOURCES})
+target_link_libraries(${PLUGIN_NAME} PUBLIC Qt5::Core Qt5::Qml Qt5::RemoteObjects)
+configure_file(qmldir ${PLUGIN_PATH}/qmldir COPYONLY)

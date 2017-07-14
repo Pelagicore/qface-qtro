@@ -2,11 +2,8 @@ project({{module|identifier}})
 
 cmake_minimum_required(VERSION 3.1)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_AUTOMOC ON)
-
-set(INSTALL_PATH "${CMAKE_BINARY_DIR}/bin" CACHE STRING "Path where the executables are deployed")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${SERVER_INSTALL_PATH})
+set(TARGET_NAME {{module|identifier}}_server)
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Qml REQUIRED)
@@ -31,6 +28,6 @@ set (SOURCES
 qt5_generate_repc(SOURCES ${CMAKE_SOURCE_DIR}/shared/{{module}}.rep SOURCE)
 
 
-add_executable({{module|identifier}} ${SOURCES})
+add_executable(${TARGET_NAME} ${SOURCES})
 
-target_link_libraries({{module|identifier}} PUBLIC Qt5::Core Qt5::Qml Qt5::RemoteObjects)
+target_link_libraries(${TARGET_NAME} PUBLIC Qt5::Core Qt5::Qml Qt5::RemoteObjects)
