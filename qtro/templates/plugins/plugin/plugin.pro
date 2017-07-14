@@ -1,5 +1,5 @@
 TEMPLATE = lib
-QT += qml quick remoteobjects
+QT += qml remoteobjects
 CONFIG += qt plugin c++11
 DESTDIR = $$BUILD_DIR/imports/{{module.name_parts|join('/')}}
 TARGET = {{module|lower}}

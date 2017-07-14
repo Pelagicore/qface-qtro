@@ -3,7 +3,7 @@
 {% for interface in module.interfaces %}
 class {{interface}}
 {
-{% for property in interface.properties if not property.type.is_model %}
+{% for property in interface.properties if not property.is_model %}
     PROP({{property|signature(expand=True)}})
 {% endfor %}
 {% for operation in interface.operations %}
