@@ -5,7 +5,7 @@ QT -= gui
 CONFIG += c++11
 
 DESTDIR = $$BUILD_DIR/bin
-TARGET = {{module}}
+TARGET = {{module}}_server
 CONFIG += console
 CONFIG -= app_bundle
 

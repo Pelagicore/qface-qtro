@@ -1,2 +1,2 @@
 module {{module}}
-plugin {{module}}
+plugin {{module}}_plugin

@@ -92,7 +92,7 @@ def install(editable):
 @cli.command()
 def uninstall():
     """uninstall the script from the system using pip3"""
-    sh('pip3 uninstall qface')
+    sh('pip3 uninstall qface-qtro')
 
 
 @cli.command()
