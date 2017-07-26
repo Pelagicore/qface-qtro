@@ -7,7 +7,7 @@ TARGET = {{project}}
 
 
 {%for module in system.modules %}
-include(plugins/{{module|identifier}}/{{module|identifier}}.pri)
+include(clients/{{module|identifier}}/{{module|identifier}}.pri)
 {% endfor %}
 
 include( {{project}}.pri )

@@ -27,6 +27,12 @@ if log_config.exists():
 log = logging.getLogger(__name__)
 
 
+class Features:
+    apps = True
+    scaffold = True
+    servers = True
+
+
 class CustomFilters:
 
     @staticmethod
@@ -85,6 +91,7 @@ def run(src, dst):
     generator.register_filter('signature', CustomFilters.signature)
     generator.register_filter('parse_doc', parse_doc)
     generator.register_filter('hash', qface.filters.hash)
+    generator.register_filter('jsonify', qface.filters.jsonify)
     generator.register_filter('signalName', Filters.signalName)
     generator.register_filter('open_ns', Filters.open_ns)
     generator.register_filter('close_ns', Filters.close_ns)
@@ -97,6 +104,7 @@ def run(src, dst):
         'system': system,
         'classPrefix': classPrefix,
         'project': project,
+        'features': Features,
     }
 
     ###############################################################
@@ -113,7 +121,8 @@ def run(src, dst):
 
     generator.write('.qmake.conf', 'qmake.conf', ctx)
     generator.write('servers/servers.pro', 'servers/servers.pro', ctx)
-    generator.write('plugins/plugins.pro', 'plugins/plugins.pro', ctx)
+    generator.write('clients/clients.pro', 'clients/clients.pro', ctx)
+    generator.write('apps/apps.pro', 'apps/apps.pro', ctx, preserve=True)
     generator.write('shared/server.conf', 'shared/server.conf', ctx)
     generator.write('shared/project.qrc', 'shared/project.qrc', ctx)
 
@@ -130,29 +139,29 @@ def run(src, dst):
     for module in system.modules:
         log.debug('generate code for module %s', module)
         ctx.update({'module': module})
-        dst = generator.apply('{{dst}}/plugins/{{module|identifier}}', ctx)
+        dst = generator.apply('{{dst}}/clients/{{module|identifier}}', ctx)
         generator.destination = dst
 
         # shared rep file per module
-        generator.write('{{module|identifier}}.pro', 'plugins/plugin/plugin.pro', ctx)
-        generator.write('{{module|identifier}}.pri', 'plugins/plugin/module.pri', ctx)
-        generator.write('CMakeLists.txt', 'plugins/plugin/CMakeLists.txt', ctx)
-        generator.write('qmldir', 'plugins/plugin/qmldir', ctx)
-        generator.write('plugin.cpp', 'plugins/plugin/plugin.cpp', ctx)
-        generator.write('plugin.h', 'plugins/plugin/plugin.h', ctx)
-        generator.write('docs/plugin.qdocconf', 'plugins/plugin/plugin.qdocconf', ctx)
-        generator.write('docs/plugin-project.qdocconf', 'plugins/plugin/plugin-project.qdocconf', ctx)
-        generator.write('docs/docs.pri', 'plugins/plugin/docs.pri', ctx)
-        generator.write('generated/generated.pri', 'plugins/plugin/generated/generated.pri', ctx)
-        generator.write('generated/core.h', 'plugins/plugin/generated/core.h', ctx)
-        generator.write('generated/core.cpp', 'plugins/plugin/generated/core.cpp', ctx)
+        generator.write('{{module|identifier}}.pro', 'clients/client/plugin.pro', ctx)
+        generator.write('{{module|identifier}}.pri', 'clients/client/module.pri', ctx)
+        generator.write('CMakeLists.txt', 'clients/client/CMakeLists.txt', ctx)
+        generator.write('qmldir', 'clients/client/qmldir', ctx)
+        generator.write('plugin.cpp', 'clients/client/plugin.cpp', ctx)
+        generator.write('plugin.h', 'clients/client/plugin.h', ctx)
+        generator.write('docs/client.qdocconf', 'clients/client/client-online.qdocconf', ctx)
+        generator.write('docs/client-project.qdocconf', 'clients/client/client-project.qdocconf', ctx)
+        generator.write('docs/docs.pri', 'clients/client/docs.pri', ctx)
+        generator.write('generated/generated.pri', 'clients/client/generated/generated.pri', ctx)
+        generator.write('generated/core.h', 'clients/client/generated/core.h', ctx)
+        generator.write('generated/core.cpp', 'clients/client/generated/core.cpp', ctx)
         for interface in module.interfaces:
             log.debug('generate code for interface %s', interface)
             ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}.h', 'plugins/plugin/interface.h', ctx)
-            generator.write('{{interface|lower}}.cpp', 'plugins/plugin/interface.cpp', ctx)
-            generator.write('generated/abstract{{interface|lower}}.h', 'plugins/plugin/generated/abstractinterface.h', ctx)
-            generator.write('generated/abstract{{interface|lower}}.cpp', 'plugins/plugin/generated/abstractinterface.cpp', ctx)
+            generator.write('{{interface|lower}}.h', 'clients/client/interface.h', ctx)
+            generator.write('{{interface|lower}}.cpp', 'clients/client/interface.cpp', ctx)
+            generator.write('generated/abstract{{interface|lower}}.h', 'clients/client/generated/abstractinterface.h', ctx)
+            generator.write('generated/abstract{{interface|lower}}.cpp', 'clients/client/generated/abstractinterface.cpp', ctx)
 
     ###############################################################
     # generate server per module
@@ -164,6 +173,7 @@ def run(src, dst):
         dst = generator.apply('{{dst}}/servers/{{module|identifier}}', ctx)
         generator.destination = dst
 
+        generator.write('{{module|identifier}}.json', 'servers/server/meta.json', ctx)
         generator.write('{{module|identifier}}.pro', 'servers/server/server.pro', ctx)
         generator.write('CMakeLists.txt', 'servers/server/CMakeLists.txt', ctx)
         generator.write('main.cpp', 'servers/server/main.cpp', ctx)
@@ -195,16 +205,31 @@ def run(src, dst):
             generator.write('{{interface|lower}}engine.h', 'servers/server/engine/engine.h', ctx, preserve=True)
             generator.write('{{interface|lower}}engine.cpp', 'servers/server/engine/engine.cpp', ctx, preserve=True)
 
+    if Features.scaffold:
+        dst = generator.apply('{{dst}}/apps/{{project|lower}}app', ctx)
+        generator.destination = dst
+        generator.write('{{project|lower}}app.pro', 'apps/app/app.pro', ctx)
+        generator.write('qml.qrc', 'apps/app/qml.qrc', ctx)
+        generator.write('main.cpp', 'apps/app/main.cpp', ctx)
+        generator.write('qml/Main.qml', 'apps/app/qml/Main.qml', ctx)
+        generator.write('qtquickcontrols2.conf', 'apps/app/qtquickcontrols2.conf', ctx)
+
 
 
 @click.command()
-@click.option('--reload/--no-reload', default=False)
-@click.option('cmd', '--exec', type=click.Path(exists=True), multiple=True)
+@click.option('--reload/--no-reload', default=False, help="Auto reload script on changes")
+@click.option('--scaffold/--no-scaffold', default=Features.scaffold, help="Generates scaffolding app")
+@click.option('--apps/--no-apps', default=Features.apps, help="Generates apps stubs")
+@click.option('--servers/--no-servers', default=Features.servers, help="Generates server code")
+@click.option('cmd', '--exec', type=click.Path(exists=True), multiple=True, help="Executes script after code generation")
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
-def app(src, dst, reload, cmd):
+def app(src, dst, reload, cmd, scaffold, apps, servers):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
+    Features.scaffold = scaffold
+    Features.apps = apps
+    Features.servers = servers
     if reload:
         script = Path(__file__).abspath()
         monitor(script, src, dst)
