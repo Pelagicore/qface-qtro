@@ -9,11 +9,17 @@ CONFIG += c++11
 
 {% for interface in module.interfaces %}
 HEADERS += $$PWD/abstract{{interface|lower}}.h
-{% endfor %}
-HEADERS += $$PWD/core.h
-
-{% for interface in module.interfaces %}
 SOURCES += $$PWD/abstract{{interface|lower}}.cpp
 {% endfor %}
+
+{% for struct in module.structs %}
+HEADERS += $$PWD/{{struct|lower}}.h
+SOURCES += $$PWD/{{struct|lower}}.cpp
+HEADERS += $$PWD/{{struct|lower}}modelproxy.h
+SOURCES += $$PWD/{{struct|lower}}modelproxy.cpp
+{% endfor %}
+
+
+HEADERS += $$PWD/core.h
 SOURCES += $$PWD/core.cpp
 

@@ -166,6 +166,13 @@ def run(src, dst):
             generator.write('lib/generated/abstract{{interface|lower}}.h', 'clients/client/lib/generated/abstractinterface.h')
             generator.write('lib/generated/abstract{{interface|lower}}.cpp', 'clients/client/lib/generated/abstractinterface.cpp')
 
+        for struct in module.structs:
+            generator.context.update({'struct': struct})
+            generator.write('lib/generated/{{struct|lower}}.h', 'shared/struct.h')
+            generator.write('lib/generated/{{struct|lower}}.cpp', 'shared/struct.cpp')
+            generator.write('lib/generated/{{struct|lower}}modelproxy.h', 'clients/client/lib/generated/structmodelproxy.h')
+            generator.write('lib/generated/{{struct|lower}}modelproxy.cpp', 'clients/client/lib/generated/structmodelproxy.cpp')
+
     ###############################################################
     # generate server per module
     ###############################################################
