@@ -96,6 +96,7 @@ def run(src, dst):
     generator.register_filter('open_ns', Filters.open_ns)
     generator.register_filter('close_ns', Filters.close_ns)
     generator.register_filter('using_ns', Filters.using_ns)
+    generator.register_filter('ns', Filters.ns)
     generator.register_filter('identifier', Filters.identifier)
     generator.register_filter('path', CustomFilters.path)
 
@@ -143,25 +144,29 @@ def run(src, dst):
         generator.destination = dst
 
         # shared rep file per module
-        generator.write('{{module|identifier}}.pro', 'clients/client/plugin.pro', ctx)
-        generator.write('{{module|identifier}}.pri', 'clients/client/module.pri', ctx)
+        generator.write('{{module|identifier}}.pro', 'clients/client/client.pro', ctx)
+        generator.write('plugin/{{module|identifier}}.pro', 'clients/client/plugin/plugin.pro', ctx)
+        generator.write('lib/lib.pro', 'clients/client/lib/lib.pro', ctx)
+        generator.write('lib/lib.pri', 'clients/client/lib/lib.pri', ctx)
+        generator.write('lib/uselib.pri', 'clients/client/lib/uselib.pri', ctx)
         generator.write('CMakeLists.txt', 'clients/client/CMakeLists.txt', ctx)
-        generator.write('qmldir', 'clients/client/qmldir', ctx)
-        generator.write('plugin.cpp', 'clients/client/plugin.cpp', ctx)
-        generator.write('plugin.h', 'clients/client/plugin.h', ctx)
-        generator.write('docs/client.qdocconf', 'clients/client/client-online.qdocconf', ctx)
-        generator.write('docs/client-project.qdocconf', 'clients/client/client-project.qdocconf', ctx)
-        generator.write('docs/docs.pri', 'clients/client/docs.pri', ctx)
-        generator.write('generated/generated.pri', 'clients/client/generated/generated.pri', ctx)
-        generator.write('generated/core.h', 'clients/client/generated/core.h', ctx)
-        generator.write('generated/core.cpp', 'clients/client/generated/core.cpp', ctx)
+        generator.write('plugin/plugin.pro', 'clients/client/plugin/plugin.pro', ctx)
+        generator.write('plugin/qmldir', 'clients/client/plugin/qmldir', ctx)
+        generator.write('plugin/plugin.cpp', 'clients/client/plugin/plugin.cpp', ctx)
+        generator.write('plugin/plugin.h', 'clients/client/plugin/plugin.h', ctx)
+        generator.write('docs/client.qdocconf', 'clients/client/docs/online.qdocconf', ctx)
+        generator.write('docs/client-project.qdocconf', 'clients/client/docs/project.qdocconf', ctx)
+        generator.write('docs/docs.pri', 'clients/client/docs/docs.pri', ctx)
+        generator.write('lib/generated/generated.pri', 'clients/client/lib/generated/generated.pri', ctx)
+        generator.write('lib/generated/core.h', 'clients/client/lib/generated/core.h', ctx)
+        generator.write('lib/generated/core.cpp', 'clients/client/lib/generated/core.cpp', ctx)
         for interface in module.interfaces:
             log.debug('generate code for interface %s', interface)
             ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}.h', 'clients/client/interface.h', ctx)
-            generator.write('{{interface|lower}}.cpp', 'clients/client/interface.cpp', ctx)
-            generator.write('generated/abstract{{interface|lower}}.h', 'clients/client/generated/abstractinterface.h', ctx)
-            generator.write('generated/abstract{{interface|lower}}.cpp', 'clients/client/generated/abstractinterface.cpp', ctx)
+            generator.write('lib/{{interface|lower}}.h', 'clients/client/lib/interface.h', ctx)
+            generator.write('lib/{{interface|lower}}.cpp', 'clients/client/lib/interface.cpp', ctx)
+            generator.write('lib/generated/abstract{{interface|lower}}.h', 'clients/client/lib/generated/abstractinterface.h', ctx)
+            generator.write('lib/generated/abstract{{interface|lower}}.cpp', 'clients/client/lib/generated/abstractinterface.cpp', ctx)
 
     ###############################################################
     # generate server per module

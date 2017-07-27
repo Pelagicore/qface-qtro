@@ -9,6 +9,8 @@
 #include <QtQml>
 #include "core.h"
 
+#include "rep_{{module|lower}}_replica.h"
+
 {{interface|using_ns}}
 
 /*!
