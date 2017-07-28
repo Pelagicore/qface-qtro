@@ -25,7 +25,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'qface>=1.3.1',
+        'qface>=1.6',
     ],
     entry_points={
         'console_scripts': [
