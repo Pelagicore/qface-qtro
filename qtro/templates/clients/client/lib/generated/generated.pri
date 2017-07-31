@@ -22,7 +22,6 @@ SOURCES += $$PWD/{{struct|lower}}proxymodel.cpp
 {% endfor %}
 
 
-HEADERS += $$PWD/module.h
 HEADERS += $$PWD/core.h
 SOURCES += $$PWD/core.cpp
 

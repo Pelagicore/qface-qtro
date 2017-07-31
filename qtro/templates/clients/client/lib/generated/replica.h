@@ -4,7 +4,8 @@
 
 #include <QtCore>
 #include <QtRemoteObjects>
-#include "module.h"
+#include "core.h"
+
 
 
 class {{class}} : public QRemoteObjectReplica {

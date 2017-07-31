@@ -8,7 +8,9 @@
 
 #include <QtQml>
 
-#include "generated/core.h"
+{% for interface in module.interfaces %}
+#include "{{interface|lower}}.h"
+{% endfor %}
 
 
 {{module|using_ns}}
@@ -26,5 +28,7 @@ void Plugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
 void Plugin::registerTypes(const char *uri)
 {
-    Core::registerTypes(uri);
+    {% for interface in module.interfaces %}
+    {{interface}}::registerQmlType(uri);
+    {% endfor %}
 }

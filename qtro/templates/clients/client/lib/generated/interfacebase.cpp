@@ -7,7 +7,6 @@
 #include "{{class|lower}}.h"
 
 #include <QtQml>
-#include "core.h"
 
 {{interface|using_ns}}
 

@@ -149,7 +149,6 @@ def run(src, dst):
         generator.write('docs/client-project.qdocconf', 'clients/client/docs/project.qdocconf')
         generator.write('docs/docs.pri', 'clients/client/docs/docs.pri')
         generator.write('lib/generated/generated.pri', 'clients/client/lib/generated/generated.pri')
-        generator.write('lib/generated/module.h', 'clients/client/lib/generated/module.h')
         generator.write('lib/generated/core.h', 'clients/client/lib/generated/core.h')
         generator.write('lib/generated/core.cpp', 'clients/client/lib/generated/core.cpp')
         for interface in module.interfaces:
@@ -183,7 +182,8 @@ def run(src, dst):
         generator.write('CMakeLists.txt', 'servers/server/CMakeLists.txt')
         generator.write('main.cpp', 'servers/server/main.cpp')
         generator.write('generated/generated.pri', 'servers/server/generated/generated.pri')
-        generator.write('generated/module.h', 'servers/server/generated/module.h')
+        generator.write('generated/core.h', 'servers/server/generated/core.h')
+        generator.write('generated/core.cpp', 'servers/server/generated/core.cpp')
         generator.write('generated/variantmodel.h', 'servers/server/generated/variantmodel.h')
         generator.write('generated/variantmodel.cpp', 'servers/server/generated/variantmodel.cpp')
         # server side

@@ -36,7 +36,8 @@ public:
 
 {% endfor %}
 
-
+    QDataStream& toStream(QDataStream& stream) const;
+    QDataStream& fromStream(QDataStream& stream);
 private:
     QExplicitlySharedDataPointer <{{class}}Data> d;
 };

@@ -28,11 +28,6 @@ class {{class}} : public QObject
     Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} NOTIFY {{property}}Changed)
 {% endfor %}
 
-{% for property in models %}
-    Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} CONSTANT)
-{% endfor %}
-
-
 public:
     explicit {{class}}(QObject *parent = nullptr);
 

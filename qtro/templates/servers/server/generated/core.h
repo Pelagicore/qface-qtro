@@ -16,22 +16,23 @@
 
 {% for struct in module.structs %}
 #include "{{struct|lower}}.h"
-#include "{{struct|lower}}proxymodel.h"
+#include "{{struct|lower}}model.h"
 {% endfor %}
 
 
 {{module|open_ns}}
 
 
-class Core : public QObject
+class {{class}} : public QObject
 {
     Q_OBJECT
 private:
-    Core(QObject *parent=nullptr);
+    {{class}}(QObject *parent=nullptr);
+    virtual ~{{class}}();
 public:
     void init();
-    static Core* instance();
-    QRemoteObjectNode* node() const;
+    static {{class}}* instance();
+    QRemoteObjectRegistryHost* host() const;
     static void registerTypes();
 {% for struct in module.structs %}
     Q_INVOKABLE {{struct}} create{{struct}}();
@@ -39,8 +40,8 @@ public:
 private:
     void reportError(QRemoteObjectNode::ErrorCode code);
 private:
-    static Core* s_instance;
-    QRemoteObjectNode* m_node;
+    static {{class}}* s_instance;
+    QRemoteObjectRegistryHost* m_host;
 };
 
 {{module|close_ns}}

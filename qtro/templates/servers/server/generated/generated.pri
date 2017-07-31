@@ -14,7 +14,8 @@ HEADERS += $$PWD/{{struct|lower}}model.h
 SOURCES += $$PWD/{{struct|lower}}model.cpp
 {% endfor %}
 
-HEADERS += $$PWD/module.h
+HEADERS += $$PWD/core.h
+SOURCES += $$PWD/core.cpp
 HEADERS += $$PWD/variantmodel.h
 SOURCES += $$PWD/variantmodel.cpp
 

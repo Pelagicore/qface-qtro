@@ -106,6 +106,23 @@ void {{class}}::set{{field|upperfirst}}({{field|parameterType}})
     return *this;
 }
 
+QDataStream& {{class}}::toStream(QDataStream& stream) const
+{
+  {% for field in struct.fields %}
+  stream << d->{{field}};
+  {% endfor %}
+  return stream;
+}
+
+QDataStream& {{class}}::fromStream(QDataStream& stream)
+{
+  {% for field in struct.fields %}
+  stream >> d->{{field}};
+  {% endfor %}
+  return stream;
+}
+
+
 bool operator==(const {{class}} &left, const {{class}} &right)
 {
     return (
@@ -122,11 +139,9 @@ bool operator!=(const {{class}} &left, const {{class}} &right) {
 }
 
 QDataStream &operator<<(QDataStream &ds, const {{class}} &obj) {
-    QtRemoteObjects::copyStoredProperties(&obj, ds);
-    return ds;
+    return obj.toStream(ds);
 }
 
 QDataStream &operator>>(QDataStream &ds, {{class}} &obj) {
-    QtRemoteObjects::copyStoredProperties(ds, &obj);
-    return ds;
+    return obj.fromStream(ds);
 }

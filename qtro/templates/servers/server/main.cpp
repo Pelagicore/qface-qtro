@@ -5,10 +5,13 @@
 
 #include <QtCore>
 #include <QtRemoteObjects>
+#include "generated/core.h"
 
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}service.h"
 {% endfor %}
+
+{{module|using_ns}}
 
 void registerModel(QRemoteObjectHostBase* host, QAbstractItemModel* model, const QString& name)
 {
@@ -23,20 +26,15 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    QSettings settings(":/server.conf", QSettings::IniFormat);
-    settings.beginGroup("{{module}}");
-    QUrl url = QUrl(settings.value("Registry", "local:{{module}}").toString());
-
-    QRemoteObjectRegistryHost host(url);
-    qDebug() << "registry at: " << host.registryUrl().toString();
+    QRemoteObjectRegistryHost* host = Core::instance()->host();
 
 {% for interface in module.interfaces %}
     // create {{interface}} service
     QScopedPointer<{{interface}}Service> {{interface|lowerfirst}}Service(new {{interface}}Service);
-    host.enableRemoting({{interface|lowerfirst}}Service.data(), "{{interface.qualified_name}}");
+    host->enableRemoting({{interface|lowerfirst}}Service.data(), "{{interface.qualified_name}}");
     qDebug() << "service at: {{interface.qualified_name}}";
 {% for property in interface.properties if property.type.is_model %}
-    registerModel(&host, {{interface|lowerfirst}}Service->{{property}}(), "{{property.qualified_name}}");
+    registerModel(host, {{interface|lowerfirst}}Service->{{property}}(), "{{property.qualified_name}}");
 {% endfor %}
 
 {% endfor %}

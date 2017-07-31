@@ -12,19 +12,26 @@
 
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
-    , m_node(nullptr)
+    , m_host(nullptr)
 {
+    qDebug() << "{{class}}::{{class}}()";
     init();
+}
+
+{{class}}::~{{class}}()
+{
 }
 
 void {{class}}::init()
 {
+    qDebug() << "{{class}}::init()";
     QSettings settings(":/server.conf", QSettings::IniFormat);
     settings.beginGroup("{{module}}");
     QUrl url = QUrl(settings.value("Registry", "local:{{module}}").toString());
-    m_node = new QRemoteObjectNode(url);
-    qDebug() << "{{class}}::{{class}}()";
-    connect(m_node, &QRemoteObjectNode::error, this, &{{class}}::reportError);
+    m_host = new QRemoteObjectRegistryHost(url);
+
+    qDebug() << "registry at: " << m_host->registryUrl().toString();
+    connect(m_host, &QRemoteObjectNode::error, this, &{{class}}::reportError);
     registerTypes();
 
 }
@@ -39,11 +46,11 @@ void {{class}}::init()
     return s_instance;
 }
 
-QRemoteObjectNode* {{class}}::node() const
+QRemoteObjectRegistryHost* {{class}}::host() const
 {
-    qDebug() << "{{class}}::node()";
-    Q_ASSERT(m_node);
-    return m_node;
+    qDebug() << "{{class}}::host()";
+    Q_ASSERT(m_host);
+    return m_host;
 }
 
 void {{class}}::registerTypes()

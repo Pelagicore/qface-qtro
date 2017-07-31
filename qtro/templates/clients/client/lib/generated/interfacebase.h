@@ -8,7 +8,7 @@
 
 #include <QtCore>
 #include <QtRemoteObjects>
-#include "module.h"
+#include "core.h"
 
 #include "{{interface|lower}}replica.h"
 
@@ -19,7 +19,7 @@ class {{class}} : public QObject
     Q_OBJECT
 {% for property in interface.properties %}
 {% if property.type.is_model %}
-    Q_PROPERTY(QAbstractItemModelReplica* {{property}} READ {{property}} CONSTANT)
+    // Q_PROPERTY(QAbstractItemModelReplica* {{property}} READ {{property}} CONSTANT)
 {% else %}
     Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} {% if not property.readonly %}WRITE set{{property|upperfirst}} {% endif %}{% if not property.const %}NOTIFY {{property}}Changed{% endif %})
 {% endif %}

@@ -8,6 +8,7 @@
 #include "{{class|lower}}.h"
 
 #include <QtQml>
+#include "generated/core.h"
 
 
 {{interface|using_ns}}
@@ -41,8 +42,9 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {
 }
 
-void {{class}}::registerQmlTypes(const QString& uri, int majorVersion, int minorVersion)
+void {{class}}::registerQmlType(const QString& uri, int majorVersion, int minorVersion)
 {
+    Core::registerTypes();
     {% if 'singleton' in interface.tags %}
     qmlRegisterSingletonType<{{class}}>(uri.toLatin1(), majorVersion, minorVersion, "{{interface}}", {{class|lower}}_singletontype_provider);
     {% else %}

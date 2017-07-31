@@ -14,6 +14,9 @@
 
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
+{% for property in properties %}
+    , m_{{property}}({{property|defaultValue}})
+{% endfor %}
 {% for property in models %}
 {% if property.is_primitive_model %}
     , m_{{property}}(new VariantModel(this))

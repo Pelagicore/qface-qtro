@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 
 {% for module in system.modules %}
 {% for interface in module.interfaces %}
-    {{module|ns}}::{{interface}}::registerQmlTypes();
+    {{module|ns}}::{{interface}}::registerQmlType();
 {% endfor %}
 {% endfor %}
 
