@@ -1,4 +1,4 @@
-{% set class = '{0}ModelProxy'.format(struct) %}
+{% set class = '{0}ProxyModel'.format(struct) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -23,9 +23,6 @@ public:
     {{class}}(QObject *parent = nullptr);
     Q_INVOKABLE {{struct}} get(int index);
     int count() const;
-public: // from QAbstractListModel
-    virtual QHash<int, QByteArray> roleNames() const;
 Q_SIGNALS:
    void countChanged(int count);
-private:
 };

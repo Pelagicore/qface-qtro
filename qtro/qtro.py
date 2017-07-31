@@ -127,13 +127,6 @@ def run(src, dst):
     generator.write('shared/project.qrc', 'shared/project.qrc')
 
     ###############################################################
-    # generate shared code per module
-    ###############################################################
-    for module in system.modules:
-        generator.context.update({'module': module})
-        generator.write('shared/{{module}}.rep', 'shared/repc.rep')
-
-    ###############################################################
     # generate plugins per module
     ###############################################################
     for module in system.modules:
@@ -156,6 +149,7 @@ def run(src, dst):
         generator.write('docs/client-project.qdocconf', 'clients/client/docs/project.qdocconf')
         generator.write('docs/docs.pri', 'clients/client/docs/docs.pri')
         generator.write('lib/generated/generated.pri', 'clients/client/lib/generated/generated.pri')
+        generator.write('lib/generated/module.h', 'clients/client/lib/generated/module.h')
         generator.write('lib/generated/core.h', 'clients/client/lib/generated/core.h')
         generator.write('lib/generated/core.cpp', 'clients/client/lib/generated/core.cpp')
         for interface in module.interfaces:
@@ -163,15 +157,17 @@ def run(src, dst):
             generator.context.update({'interface': interface})
             generator.write('lib/{{interface|lower}}.h', 'clients/client/lib/interface.h')
             generator.write('lib/{{interface|lower}}.cpp', 'clients/client/lib/interface.cpp')
-            generator.write('lib/generated/abstract{{interface|lower}}.h', 'clients/client/lib/generated/abstractinterface.h')
-            generator.write('lib/generated/abstract{{interface|lower}}.cpp', 'clients/client/lib/generated/abstractinterface.cpp')
+            generator.write('lib/generated/{{interface|lower}}base.h', 'clients/client/lib/generated/interfacebase.h')
+            generator.write('lib/generated/{{interface|lower}}base.cpp', 'clients/client/lib/generated/interfacebase.cpp')
+            generator.write('lib/generated/{{interface|lower}}replica.h', 'clients/client/lib/generated/replica.h')
+            generator.write('lib/generated/{{interface|lower}}replica.cpp', 'clients/client/lib/generated/replica.cpp')
 
         for struct in module.structs:
             generator.context.update({'struct': struct})
             generator.write('lib/generated/{{struct|lower}}.h', 'shared/struct.h')
             generator.write('lib/generated/{{struct|lower}}.cpp', 'shared/struct.cpp')
-            generator.write('lib/generated/{{struct|lower}}modelproxy.h', 'clients/client/lib/generated/structmodelproxy.h')
-            generator.write('lib/generated/{{struct|lower}}modelproxy.cpp', 'clients/client/lib/generated/structmodelproxy.cpp')
+            generator.write('lib/generated/{{struct|lower}}proxymodel.h', 'clients/client/lib/generated/structproxymodel.h')
+            generator.write('lib/generated/{{struct|lower}}proxymodel.cpp', 'clients/client/lib/generated/structproxymodel.cpp')
 
     ###############################################################
     # generate server per module
@@ -187,6 +183,7 @@ def run(src, dst):
         generator.write('CMakeLists.txt', 'servers/server/CMakeLists.txt')
         generator.write('main.cpp', 'servers/server/main.cpp')
         generator.write('generated/generated.pri', 'servers/server/generated/generated.pri')
+        generator.write('generated/module.h', 'servers/server/generated/module.h')
         generator.write('generated/variantmodel.h', 'servers/server/generated/variantmodel.h')
         generator.write('generated/variantmodel.cpp', 'servers/server/generated/variantmodel.cpp')
         # server side
@@ -199,6 +196,8 @@ def run(src, dst):
         for struct in module.structs:
             log.debug('generate code for struct %s', struct)
             generator.context.update({'struct': struct})
+            generator.write('generated/{{struct|lower}}.h', 'shared/struct.h')
+            generator.write('generated/{{struct|lower}}.cpp', 'shared/struct.cpp')
             generator.write('generated/{{struct|lower}}model.h', 'servers/server/generated/structmodel.h')
             generator.write('generated/{{struct|lower}}model.cpp', 'servers/server/generated/structmodel.cpp')
 

@@ -21,11 +21,8 @@ SOURCES += $$PWD/{{interface|lower}}.cpp
 
 include( $$PWD/generated/generated.pri )
 
-REPC_REPLICA += $$SOURCE_DIR/shared/{{module}}.rep
-
 RESOURCES += $$SOURCE_DIR/shared/project.qrc
 
-OTHER_FILES += $$SOURCE_DIR/shared/{{module}}.rep
 OTHER_FILES += $$SOURCE_DIR/shared/server.conf
 OTHER_FILES += uselib.pri
 

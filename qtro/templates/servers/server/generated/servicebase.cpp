@@ -1,20 +1,20 @@
 {% set class = '{0}ServiceBase'.format(interface) %}
+{% set models = interface.properties|selectattr('is_model')|list %}
+{% set primitive_models = interface.properties|selectattr('is_primitive_model')|list %}
+{% set complex_models = interface.properties|selectattr('is_complex_model')|list %}
+{% set properties = interface.properties|rejectattr('is_model')|list %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
 ****************************************************************************/
-
-{% set models = interface.properties|selectattr('is_model')|list %}
-{% set primitive_models = interface.properties|selectattr('is_primitive_model')|list %}
-{% set complex_models = interface.properties|selectattr('is_complex_model')|list %}
 
 #include "{{interface|lower}}servicebase.h"
 #include "engine/{{interface|lower}}engine.h"
 
 
 {{class}}::{{class}}(QObject *parent)
-    : {{interface}}SimpleSource(parent)
-{% for property in interface.properties %}
+    : QObject(parent)
+{% for property in models %}
 {% if property.is_primitive_model %}
     , m_{{property}}(new VariantModel(this))
 {% elif property.is_complex_model %}
@@ -30,18 +30,32 @@
     return m_engine;
 }
 
-{% for property in interface.properties if property.type.is_model %}
-{% if property.type.nested.is_primitive %}
-VariantModel* {{class}}::{{property}}() const
+{% for property in properties %}
+{{property|returnType}} {{class}}::{{property}}() const
 {
     return m_{{property}};
 }
-{% else %}
-{{property.type.nested|upperfirst}}Model* {{class}}::{{property}}() const
+
+void {{class}}::set{{property|upperfirst}}({{property|parameterType}})
+{
+    if (m_{{property}} != {{property}}) {
+        m_{{property}} = {{property}};
+        Q_EMIT {{property}}Changed({{property}});
+    }
+}
+
+void {{class}}::push{{property|upperfirst}}({{property|parameters}})
+{
+    set{{property|upperfirst}}({{property}});
+}
+
+{% endfor %}
+
+{% for property in models %}
+{{property|returnType}} {{class}}::{{property}}() const
 {
     return m_{{property}};
 }
-{% endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}

@@ -1,4 +1,4 @@
-{% set class = 'Abstract{0}'.format(interface) %}
+{% set class = '{0}Base'.format(interface) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -8,8 +8,9 @@
 
 #include <QtCore>
 #include <QtRemoteObjects>
+#include "module.h"
 
-#include "rep_{{module|lower}}_replica.h"
+#include "{{interface|lower}}replica.h"
 
 {{interface|open_ns}}
 

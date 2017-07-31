@@ -1,4 +1,4 @@
-{% set class = '{0}ModelProxy'.format(struct) %}
+{% set class = '{0}ProxyModel'.format(struct) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -9,23 +9,24 @@
 {{class}}::{{class}}(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
-    {% for field in struct.fields %}
-    m_roleNames.insert(Roles::{{field|upperfirst}}Role, QByteArray("{{field}}"));
-    {% endfor %}
 }
 
 int {{class}}::count() const
 {
-    return m_data.count();
+    return rowCount(QModelIndex());
 }
 
 {{struct}} {{class}}::get(int index)
 {
-    return {{struct}}();
-}
+    {{struct}} {{struct|lower}};
 
-QHash<int, QByteArray> {{class}}::roleNames() const
-{
-    return m_roleNames;
+    const QModelIndex& modelIndex = createIndex(index, 0);
+
+{% for field in struct.fields %}
+    QVariant {{field}}Value = data(modelIndex, {{field|upperfirst}}Role);
+    {{struct|lower}}.set{{field|upperfirst}}({{field}}Value.value<{{field|returnType}}>());
+
+{% endfor %}
+    return {{struct|lower}};
 }
 

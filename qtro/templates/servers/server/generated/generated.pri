@@ -8,17 +8,17 @@ SOURCES += $$PWD/{{interface|lower}}servicebase.cpp
 {% endfor %}
 
 {% for struct in module.structs %}
+HEADERS += $$PWD/{{struct|lower}}.h
+SOURCES += $$PWD/{{struct|lower}}.cpp
 HEADERS += $$PWD/{{struct|lower}}model.h
 SOURCES += $$PWD/{{struct|lower}}model.cpp
 {% endfor %}
 
+HEADERS += $$PWD/module.h
 HEADERS += $$PWD/variantmodel.h
 SOURCES += $$PWD/variantmodel.cpp
 
-OTHER_FILES += $$SOURCE_DIR/shared/{{module}}.rep
 OTHER_FILES += $$SOURCE_DIR/shared/server.conf
 
 RESOURCES += $$SOURCE_DIR/shared/project.qrc
-
-REPC_SOURCE += $$SOURCE_DIR/shared/{{module}}.rep
 

@@ -9,11 +9,11 @@
 
 #include <QtCore>
 
-#include "generated/abstract{{interface|lower}}.h"
+#include "generated/{{interface|lower}}base.h"
 
 {{interface|open_ns}}
 
-class {{class}} : public Abstract{{interface}}
+class {{class}} : public {{interface}}Base
 {
     Q_OBJECT
 public:

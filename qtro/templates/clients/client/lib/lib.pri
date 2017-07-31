@@ -12,6 +12,4 @@ SOURCES += $$PWD/{{interface|lower}}.cpp
 
 include( $$PWD/generated/generated.pri )
 
-REPC_REPLICA += $$SOURCE_DIR/shared/{{module}}.rep
-
 RESOURCES += $$SOURCE_DIR/shared/project.qrc

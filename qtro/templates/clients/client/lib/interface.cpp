@@ -33,7 +33,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 
 {{interface.comment}}
 {{class}}::{{class}}(QObject *parent)
-    : Abstract{{interface}}(parent)
+    : {{interface}}Base(parent)
 {
 }
 
