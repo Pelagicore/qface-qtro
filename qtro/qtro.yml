@@ -1,23 +1,25 @@
 general:
-    destination: '{{dst}}'
-    documents:
-        '{{project}}.pro': 'project.pro'
-        'lib{{project}}.pro': 'libproject.pro'
-        '{{project}}.pri': 'project.pri'
-        'CMakeLists.txt': 'CMakeLists.txt'
-        '.qmake.conf': 'qmake.conf'
-        'servers/servers.pro': 'servers/servers.pro'
-        'servers/start.sh': 'servers/start.sh'
-        'servers/stop.sh': 'servers/stop.sh'
-        'clients/clients.pro': 'clients/clients.pro'
-        'apps/apps.pro': 'apps/apps.pro'
-    preserve:
-        - 'apps/apps.pro'
+    system:
+        destination: '{{dst}}'
+        documents:
+            '{{project}}.pro': 'project.pro'
+            'lib{{project}}.pro': 'libproject.pro'
+            '{{project}}.pri': 'project.pri'
+            'CMakeLists.txt': 'CMakeLists.txt'
+            '.qmake.conf': 'qmake.conf'
+            'servers/servers.pro': 'servers/servers.pro'
+            'clients/clients.pro': 'clients/clients.pro'
+            'apps/apps.pro': 'apps/apps.pro'
+            'servers/start.sh': 'servers/start.sh'
+            'servers/stop.sh': 'servers/stop.sh'
+        preserve:
+            - 'apps/apps.pro'
 shared:
-    destination: '{{dst}}'
-    documents:
-        'shared/server.conf': 'shared/server.conf'
-        'shared/project.qrc': 'shared/project.qrc'
+    system:
+        destination: '{{dst}}'
+        documents:
+            'shared/server.conf': 'shared/server.conf'
+            'shared/project.qrc': 'shared/project.qrc'
 client:
     module:
         destination: '{{dst}}/clients/{{module|identifier}}'
