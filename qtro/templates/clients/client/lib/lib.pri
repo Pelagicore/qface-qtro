@@ -10,8 +10,7 @@ HEADERS += $$PWD/{{interface|lower}}.h
 SOURCES += $$PWD/{{interface|lower}}.cpp
 {% endfor %}
 
-include( generated/generated.pri )
-include( docs/docs.pri )
+include( $$PWD/generated/generated.pri )
 
 REPC_REPLICA += $$SOURCE_DIR/shared/{{module}}.rep
 

@@ -9,8 +9,6 @@ uri = {{module}}
 HEADERS += plugin.h
 SOURCES += plugin.cpp
 
-include( {{module|identifier}}.pri )
-
 DISTFILES = qmldir
 
 !equals(_PRO_FILE_PWD_, $$OUT_PWD) {
@@ -28,3 +26,7 @@ unix {
     target.path = $$installPath
     INSTALLS += target qmldir
 }
+
+
+LIBS += -L$$BUILD_DIR/libs -l{{module|identifier}}
+INCLUDEPATH += $$PWD/../lib

@@ -20,7 +20,7 @@ public:
     {{class}}(QObject *parent = nullptr);
     virtual ~{{class}}();
 
-    static void registerQmlTypes(const QString& uri, int majorVersion=1, int minorVersion=0);
+    static void registerQmlTypes(const QString& uri="{{module}}", int majorVersion=1, int minorVersion=0);
 };
 
 

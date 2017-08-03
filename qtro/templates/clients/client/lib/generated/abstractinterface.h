@@ -9,8 +9,7 @@
 #include <QtCore>
 #include <QtRemoteObjects>
 
-#include "rep_{{module}}_replica.h"
-
+#include "rep_{{module|lower}}_replica.h"
 
 {{interface|open_ns}}
 

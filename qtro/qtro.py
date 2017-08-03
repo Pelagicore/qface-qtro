@@ -7,7 +7,7 @@ import logging.config
 import yaml
 from path import Path
 
-from qface.generator import FileSystem, Generator
+from qface.generator import FileSystem, RuleGenerator
 from qface.helper.qtcpp import Filters
 from qface.helper.doc import parse_doc
 from qface.watch import monitor
@@ -25,6 +25,9 @@ log_config = Path('log.yaml')
 if log_config.exists():
     logging.config.dictConfig(yaml.load(log_config.open('r')))
 log = logging.getLogger(__name__)
+
+
+features = set()
 
 
 class CustomFilters:
@@ -70,141 +73,175 @@ class CustomFilters:
             filter = CustomFilters.returnType
         return Filters.signature(env, s, expand, filter)
 
+    @staticmethod
+    def filters():
+        return {
+
+        }
+
 
 def run(src, dst):
     log.debug('run {0} {1}'.format(src, dst))
     project = Path(dst).name
     classPrefix = ''
     system = FileSystem.parse(src)
-    generator = Generator(search_path=here / 'templates')
-    Filters.classPrefix = classPrefix
-    generator.register_filter('defaultValue', CustomFilters.defaultValue)
-    generator.register_filter('returnType', CustomFilters.returnType)
-    generator.register_filter('parameterType', CustomFilters.parameterType)
-    generator.register_filter('parameters', CustomFilters.parameters)
-    generator.register_filter('signature', CustomFilters.signature)
-    generator.register_filter('parse_doc', parse_doc)
-    generator.register_filter('hash', qface.filters.hash)
-    generator.register_filter('signalName', Filters.signalName)
-    generator.register_filter('open_ns', Filters.open_ns)
-    generator.register_filter('close_ns', Filters.close_ns)
-    generator.register_filter('using_ns', Filters.using_ns)
-    generator.register_filter('identifier', Filters.identifier)
-    generator.register_filter('path', CustomFilters.path)
 
-    ctx = {
+    context = {
         'dst': dst,
         'system': system,
         'classPrefix': classPrefix,
         'project': project,
+        'features': features,
     }
+
+    generator = RuleGenerator(search_path=here/'templates', destination=dst, context=context, features=features)
+    Filters.classPrefix = classPrefix
+    generator.filters.update({
+        'defaultValue': CustomFilters.defaultValue,
+        'returnType': CustomFilters.returnType,
+        'parameterType': CustomFilters.parameterType,
+        'parameters': CustomFilters.parameters,
+        'signature': CustomFilters.signature,
+        'parse_doc': parse_doc,
+        'hash': qface.filters.hash,
+        'jsonify': qface.filters.jsonify,
+        'signalName': Filters.signalName,
+        'open_ns': Filters.open_ns,
+        'close_ns': Filters.close_ns,
+        'using_ns': Filters.using_ns,
+        'ns': Filters.ns,
+        'identifier': Filters.identifier,
+        'path': CustomFilters.path,
+    })
+
+    generator.process_rules(here/'qtro.yml', system)
+
 
     ###############################################################
     # generate remotes
     ###############################################################
 
-    dst = generator.apply('{{dst}}', ctx)
-    generator.destination = dst
+    # generator.destination = '{{dst}}'
 
-    generator.write('{{project}}.pro', 'project.pro', ctx)
-    generator.write('lib{{project}}.pro', 'libproject.pro', ctx)
-    generator.write('{{project}}.pri', 'project.pri', ctx)
-    generator.write('CMakeLists.txt', 'CMakeLists.txt', ctx)
+    # generator.write('{{project}}.pro', 'project.pro')
+    # generator.write('lib{{project}}.pro', 'libproject.pro')
+    # generator.write('{{project}}.pri', 'project.pri')
+    # generator.write('CMakeLists.txt', 'CMakeLists.txt')
 
-    generator.write('.qmake.conf', 'qmake.conf', ctx)
-    generator.write('servers/servers.pro', 'servers/servers.pro', ctx)
-    generator.write('plugins/plugins.pro', 'plugins/plugins.pro', ctx)
-    generator.write('shared/server.conf', 'shared/server.conf', ctx)
-    generator.write('shared/project.qrc', 'shared/project.qrc', ctx)
+    # generator.write('.qmake.conf', 'qmake.conf')
+    # generator.write('servers/servers.pro', 'servers/servers.pro')
+    # generator.write('clients/clients.pro', 'clients/clients.pro')
+    # generator.write('apps/apps.pro', 'apps/apps.pro', preserve=True)
+    # generator.write('shared/server.conf', 'shared/server.conf')
+    # generator.write('shared/project.qrc', 'shared/project.qrc')
 
-    ###############################################################
-    # generate shared code per module
-    ###############################################################
-    for module in system.modules:
-        ctx.update({'module': module})
-        generator.write('shared/{{module}}.rep', 'shared/repc.rep', ctx)
+    # ###############################################################
+    # # generate shared code per module
+    # ###############################################################
+    # for module in system.modules:
+    #     generator.context.update({'module': module})
+    #     generator.write('shared/{{module}}.rep', 'shared/repc.rep')
 
-    ###############################################################
-    # generate plugins per module
-    ###############################################################
-    for module in system.modules:
-        log.debug('generate code for module %s', module)
-        ctx.update({'module': module})
-        dst = generator.apply('{{dst}}/plugins/{{module|identifier}}', ctx)
-        generator.destination = dst
+    # ###############################################################
+    # # generate plugins per module
+    # ###############################################################
+    # for module in system.modules:
+    #     log.debug('generate code for module %s', module)
+    #     generator.context.update({'module': module})
+    #     generator.destination = '{{dst}}/clients/{{module|identifier}}'
 
-        # shared rep file per module
-        generator.write('{{module|identifier}}.pro', 'plugins/plugin/plugin.pro', ctx)
-        generator.write('{{module|identifier}}.pri', 'plugins/plugin/module.pri', ctx)
-        generator.write('CMakeLists.txt', 'plugins/plugin/CMakeLists.txt', ctx)
-        generator.write('qmldir', 'plugins/plugin/qmldir', ctx)
-        generator.write('plugin.cpp', 'plugins/plugin/plugin.cpp', ctx)
-        generator.write('plugin.h', 'plugins/plugin/plugin.h', ctx)
-        generator.write('docs/plugin.qdocconf', 'plugins/plugin/plugin.qdocconf', ctx)
-        generator.write('docs/plugin-project.qdocconf', 'plugins/plugin/plugin-project.qdocconf', ctx)
-        generator.write('docs/docs.pri', 'plugins/plugin/docs.pri', ctx)
-        generator.write('generated/generated.pri', 'plugins/plugin/generated/generated.pri', ctx)
-        generator.write('generated/core.h', 'plugins/plugin/generated/core.h', ctx)
-        generator.write('generated/core.cpp', 'plugins/plugin/generated/core.cpp', ctx)
-        for interface in module.interfaces:
-            log.debug('generate code for interface %s', interface)
-            ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}.h', 'plugins/plugin/interface.h', ctx)
-            generator.write('{{interface|lower}}.cpp', 'plugins/plugin/interface.cpp', ctx)
-            generator.write('generated/abstract{{interface|lower}}.h', 'plugins/plugin/generated/abstractinterface.h', ctx)
-            generator.write('generated/abstract{{interface|lower}}.cpp', 'plugins/plugin/generated/abstractinterface.cpp', ctx)
+    #     # shared rep file per module
+    #     generator.write('{{module|identifier}}.pro', 'clients/client/client.pro')
+    #     generator.write('plugin/{{module|identifier}}.pro', 'clients/client/plugin/plugin.pro')
+    #     generator.write('lib/lib.pro', 'clients/client/lib/lib.pro')
+    #     generator.write('lib/lib.pri', 'clients/client/lib/lib.pri')
+    #     generator.write('lib/uselib.pri', 'clients/client/lib/uselib.pri')
+    #     generator.write('CMakeLists.txt', 'clients/client/CMakeLists.txt')
+    #     generator.write('plugin/plugin.pro', 'clients/client/plugin/plugin.pro')
+    #     generator.write('plugin/qmldir', 'clients/client/plugin/qmldir')
+    #     generator.write('plugin/plugin.cpp', 'clients/client/plugin/plugin.cpp')
+    #     generator.write('plugin/plugin.h', 'clients/client/plugin/plugin.h')
+    #     generator.write('docs/client.qdocconf', 'clients/client/docs/online.qdocconf')
+    #     generator.write('docs/client-project.qdocconf', 'clients/client/docs/project.qdocconf')
+    #     generator.write('docs/docs.pri', 'clients/client/docs/docs.pri')
+    #     generator.write('lib/generated/generated.pri', 'clients/client/lib/generated/generated.pri')
+    #     generator.write('lib/generated/core.h', 'clients/client/lib/generated/core.h')
+    #     generator.write('lib/generated/core.cpp', 'clients/client/lib/generated/core.cpp')
+    #     for interface in module.interfaces:
+    #         log.debug('generate code for interface %s', interface)
+    #         generator.context.update({'interface': interface})
+    #         generator.write('lib/{{interface|lower}}.h', 'clients/client/lib/interface.h')
+    #         generator.write('lib/{{interface|lower}}.cpp', 'clients/client/lib/interface.cpp')
+    #         generator.write('lib/generated/abstract{{interface|lower}}.h', 'clients/client/lib/generated/abstractinterface.h')
+    #         generator.write('lib/generated/abstract{{interface|lower}}.cpp', 'clients/client/lib/generated/abstractinterface.cpp')
 
-    ###############################################################
-    # generate server per module
-    ###############################################################
-    for module in system.modules:
-        log.debug('generate code for server module %s', module)
-        ctx.update({'module': module})
+    # ###############################################################
+    # # generate server per module
+    # ###############################################################
+    # for module in system.modules:
+    #     log.debug('generate code for server module %s', module)
+    #     generator.context.update({'module': module})
 
-        dst = generator.apply('{{dst}}/servers/{{module|identifier}}', ctx)
-        generator.destination = dst
+    #     generator.destination = '{{dst}}/servers/{{module|identifier}}'
 
-        generator.write('{{module|identifier}}.pro', 'servers/server/server.pro', ctx)
-        generator.write('CMakeLists.txt', 'servers/server/CMakeLists.txt', ctx)
-        generator.write('main.cpp', 'servers/server/main.cpp', ctx)
-        generator.write('generated/generated.pri', 'servers/server/generated/generated.pri', ctx)
-        generator.write('generated/variantmodel.h', 'servers/server/generated/variantmodel.h', ctx)
-        generator.write('generated/variantmodel.cpp', 'servers/server/generated/variantmodel.cpp', ctx)
-        # server side
-        for interface in module.interfaces:
-            ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}service.h', 'servers/server/service.h', ctx, preserve=True)
-            generator.write('{{interface|lower}}service.cpp', 'servers/server/service.cpp', ctx, preserve=True)
-            generator.write('generated/{{interface|lower}}servicebase.h', 'servers/server/generated/servicebase.h', ctx)
-            generator.write('generated/{{interface|lower}}servicebase.cpp', 'servers/server/generated/servicebase.cpp', ctx)
-        for struct in module.structs:
-            log.debug('generate code for struct %s', struct)
-            ctx.update({'struct': struct})
-            generator.write('generated/{{struct|lower}}model.h', 'servers/server/generated/structmodel.h', ctx)
-            generator.write('generated/{{struct|lower}}model.cpp', 'servers/server/generated/structmodel.cpp', ctx)
+    #     generator.write('{{module|identifier}}.json', 'servers/server/meta.json')
+    #     generator.write('{{module|identifier}}.pro', 'servers/server/server.pro')
+    #     generator.write('CMakeLists.txt', 'servers/server/CMakeLists.txt')
+    #     generator.write('main.cpp', 'servers/server/main.cpp')
+    #     generator.write('generated/generated.pri', 'servers/server/generated/generated.pri')
+    #     generator.write('generated/variantmodel.h', 'servers/server/generated/variantmodel.h')
+    #     generator.write('generated/variantmodel.cpp', 'servers/server/generated/variantmodel.cpp')
+    #     # server side
+    #     for interface in module.interfaces:
+    #         generator.context.update({'interface': interface})
+    #         generator.write('{{interface|lower}}service.h', 'servers/server/service.h', preserve=True)
+    #         generator.write('{{interface|lower}}service.cpp', 'servers/server/service.cpp', preserve=True)
+    #         generator.write('generated/{{interface|lower}}servicebase.h', 'servers/server/generated/servicebase.h')
+    #         generator.write('generated/{{interface|lower}}servicebase.cpp', 'servers/server/generated/servicebase.cpp')
+    #     for struct in module.structs:
+    #         log.debug('generate code for struct %s', struct)
+    #         generator.context.update({'struct': struct})
+    #         generator.write('generated/{{struct|lower}}model.h', 'servers/server/generated/structmodel.h')
+    #         generator.write('generated/{{struct|lower}}model.cpp', 'servers/server/generated/structmodel.cpp')
 
-    # generate engine code
-    for module in system.modules:
-        log.debug('generate code for the engine modules')
-        ctx.update({'module': module})
-        dst = generator.apply('{{dst}}/servers/{{module|identifier}}/engine', ctx)
-        generator.destination = dst
-        generator.write('engine.pri', 'servers/server/engine/engine.pri', ctx)
-        for interface in module.interfaces:
-            ctx.update({'interface': interface})
-            generator.write('{{interface|lower}}engine.h', 'servers/server/engine/engine.h', ctx, preserve=True)
-            generator.write('{{interface|lower}}engine.cpp', 'servers/server/engine/engine.cpp', ctx, preserve=True)
+    # # generate engine code
+    # for module in system.modules:
+    #     log.debug('generate code for the engine modules')
+    #     generator.context.update({'module': module})
+    #     generator.destination = '{{dst}}/servers/{{module|identifier}}/engine'
+    #     generator.write('engine.pri', 'servers/server/engine/engine.pri')
+    #     for interface in module.interfaces:
+    #         generator.context.update({'interface': interface})
+    #         generator.write('{{interface|lower}}engine.h', 'servers/server/engine/engine.h', preserve=True)
+    #         generator.write('{{interface|lower}}engine.cpp', 'servers/server/engine/engine.cpp', preserve=True)
 
+    # if Features.scaffold:
+    #     generator.destination = '{{dst}}/apps/{{project|lower}}app'
+    #     generator.write('{{project|lower}}app.pro', 'apps/app/app.pro')
+    #     generator.write('qml.qrc', 'apps/app/qml.qrc')
+    #     generator.write('main.cpp', 'apps/app/main.cpp')
+    #     generator.write('qml/Main.qml', 'apps/app/qml/Main.qml')
+    #     generator.write('qtquickcontrols2.conf', 'apps/app/qtquickcontrols2.conf')
 
 
 @click.command()
-@click.option('--reload/--no-reload', default=False)
-@click.option('cmd', '--exec', type=click.Path(exists=True), multiple=True)
+@click.option('--reload/--no-reload', default=False, help="Auto reload script on changes")
+@click.option('--scaffold/--no-scaffold', default=True, help="Generates scaffolding app")
+@click.option('--apps/--no-apps', default=True, help="Generates apps stubs")
+@click.option('--servers/--no-servers', default=True, help="Generates server code")
+@click.option('cmd', '--exec', type=click.Path(exists=True), multiple=True, help="Executes script after code generation")
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
 @click.argument('dst', nargs=1, type=click.Path(exists=True))
-def app(src, dst, reload, cmd):
+def app(src, dst, reload, cmd, scaffold, apps, servers):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
+    global features
+    if scaffold:
+        features.add('scaffold')
+    if apps:
+        features.add('apps')
+    if servers:
+        features.add('servers')
     if reload:
         script = Path(__file__).abspath()
         monitor(script, src, dst)
