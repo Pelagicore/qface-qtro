@@ -1,4 +1,5 @@
 click
 path.py
-jinja2
+Jinja2
+PyYAML
 qface>=1.8
