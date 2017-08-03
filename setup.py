@@ -27,8 +27,8 @@ setup(
     install_requires=[
         'qface>=1.8',
         'click',
-        'yaml',
-        'jinja2',
+        'PyYAML',
+        'Jinja2',
         'path.py'
     ],
     entry_points={
