@@ -4,3 +4,8 @@ TEMPLATE = subdirs
 SUBDIRS += {{module|identifier}}
 {% endfor %}
 
+scripts.path = $$BUILD_DIR
+scripts.files = *.sh
+
+INSTALLS += scripts
+

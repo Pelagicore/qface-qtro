@@ -14,7 +14,7 @@
 #include <QtCore>
 #include <QtRemoteObjects>
 
-#include "module.h"
+#include "core.h"
 
 class {{interface}}Engine;
 
@@ -45,7 +45,10 @@ public:
 
 Q_SIGNALS:
 {% for property in properties %}
-    void {{property}}Changed({{property|returnType}});
+    void {{property}}Changed({{property|parameters}});
+{% endfor %}
+{% for signal in interface.signals %}
+    void {{signal}}({{signal|parameters}});
 {% endfor %}
 
 

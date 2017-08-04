@@ -68,6 +68,7 @@ void {{class}}::push{{property|upperfirst}}({{property|parameters}})
     {% for parameter in operation.parameters %}
     Q_UNUSED({{parameter}})
     {% endfor %}
+    return {{operation|defaultValue}};
 }
 {% endfor %}
 

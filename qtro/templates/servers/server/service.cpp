@@ -4,6 +4,7 @@
 {{ cpp.preserved() }}
 
 #include "{{class|lower}}.h"
+#include "engine/{{interface|lower}}engine.h"
 
 
 {{class}}::{{class}}(QObject *parent)

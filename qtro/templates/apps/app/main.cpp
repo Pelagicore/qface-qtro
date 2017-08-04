@@ -13,6 +13,7 @@ int main(int argc, char** argv)
     QGuiApplication app(argc, argv);
 
 {% for module in system.modules %}
+    qmlRegisterModule("{{module}}", 1, 0);
 {% for interface in module.interfaces %}
     {{module|ns}}::{{interface}}::registerQmlType();
 {% endfor %}

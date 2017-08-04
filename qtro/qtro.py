@@ -121,6 +121,8 @@ def run(src, dst):
 
     generator.write('.qmake.conf', 'qmake.conf')
     generator.write('servers/servers.pro', 'servers/servers.pro')
+    generator.write('servers/start.sh', 'servers/start.sh')
+    generator.write('servers/stop.sh', 'servers/stop.sh')
     generator.write('clients/clients.pro', 'clients/clients.pro')
     generator.write('apps/apps.pro', 'apps/apps.pro', preserve=True)
     generator.write('shared/server.conf', 'shared/server.conf')

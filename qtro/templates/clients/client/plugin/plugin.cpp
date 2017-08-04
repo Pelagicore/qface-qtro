@@ -28,6 +28,7 @@ void Plugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
 void Plugin::registerTypes(const char *uri)
 {
+    qmlRegisterModule(uri, 1,0);
     {% for interface in module.interfaces %}
     {{interface}}::registerQmlType(uri);
     {% endfor %}

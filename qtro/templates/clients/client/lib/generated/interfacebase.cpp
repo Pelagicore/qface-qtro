@@ -82,7 +82,7 @@ QAbstractItemModelReplica* {{class}}::{{property}}() const
 */
 {{operation|returnType}} {{class}}::{{operation}}({{operation.parameters|map('parameterType')|join(', ')}})
 {
-    m_replica->{{operation}}({{operation.parameters|join(',')}});
+    return m_replica->{{operation}}({{operation.parameters|join(',')}});
 }
 {% endfor %}
 
