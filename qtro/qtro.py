@@ -95,6 +95,7 @@ def run(src, dst):
     }
 
     generator = RuleGenerator(search_path=here / 'templates', destination=dst, context=context, features=features)
+
     Filters.classPrefix = classPrefix
     generator.filters.update({
         'defaultValue': CustomFilters.defaultValue,

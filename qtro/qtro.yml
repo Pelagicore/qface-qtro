@@ -47,7 +47,6 @@ client:
             'lib/{{interface|lower}}.cpp': 'clients/client/lib/interface.cpp'
             'lib/generated/abstract{{interface|lower}}.h': 'clients/client/lib/generated/interfacebase.h'
             'lib/generated/abstract{{interface|lower}}.cpp': 'clients/client/lib/generated/interfacebase.cpp'
-
 server:
     module:
         destination: '{{dst}}/servers/{{module|identifier}}'
