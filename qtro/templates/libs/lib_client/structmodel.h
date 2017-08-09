@@ -10,6 +10,8 @@
 
 #include "{{struct|lower}}.h"
 
+{{module|open_ns}}
+
 class {{class}} : public QSortFilterProxyModel
 {
     Q_OBJECT
@@ -26,3 +28,5 @@ public:
 Q_SIGNALS:
    void countChanged(int count);
 };
+
+{{module|close_ns}}

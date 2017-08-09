@@ -36,7 +36,6 @@
     return m_{{property}};
 }
 
-{{ property_setter_impl(class, property) }}
 void {{class}}::set{{property|upperfirst}}({{property|parameterType}})
 {
     if (m_{{property}} != {{property}}) {

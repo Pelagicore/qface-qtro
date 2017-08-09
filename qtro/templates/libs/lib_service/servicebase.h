@@ -26,7 +26,7 @@ class {{class}} : public QObject
     Q_CLASSINFO(QCLASSINFO_REMOTEOBJECT_SIGNATURE, "{{interface.qualified_name|hash}}")
 
 {% for property in properties %}
-    Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} NOTIFY {{property}}Changed)
+    Q_PROPERTY({{property|ns}}{{property|returnType}} {{property}} READ {{property}} NOTIFY {{property}}Changed)
 {% endfor %}
 
 public:

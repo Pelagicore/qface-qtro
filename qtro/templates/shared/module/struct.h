@@ -10,6 +10,7 @@
 
 #include <QtCore>
 
+{{module|open_ns}}
 
 class {{class}}Data;
 
@@ -17,7 +18,7 @@ class {{class}}
 {
     Q_GADGET
 {% for field in struct.fields %}
-    Q_PROPERTY({{field|returnType}} {{field}} READ {{field}} WRITE set{{field|upperfirst}})
+    Q_PROPERTY({{field|ns}}{{field|returnType}} {{field}} READ {{field}} WRITE set{{field|upperfirst}})
 {% endfor %}
 
 public:
@@ -42,11 +43,14 @@ private:
     QExplicitlySharedDataPointer <{{class}}Data> d;
 };
 
-bool operator==(const {{class}} &left, const {{class}} &right);
-bool operator!=(const {{class}} &left, const {{class}} &right);
-QDataStream &operator<<(QDataStream &ds, const {{class}} &obj);
-QDataStream &operator>>(QDataStream &ds, {{class}} &obj);
 
-Q_DECLARE_METATYPE({{class}})
+{{module|close_ns}}
+
+bool operator==(const {{module|ns}}{{class}} &left, const {{module|ns}}{{class}} &right);
+bool operator!=(const {{module|ns}}{{class}} &left, const {{module|ns}}{{class}} &right);
+QDataStream &operator<<(QDataStream &ds, const {{module|ns}}{{class}} &obj);
+QDataStream &operator>>(QDataStream &ds, {{module|ns}}{{class}} &obj);
+
+Q_DECLARE_METATYPE({{module|ns}}{{class}})
 
 #endif // {{class|upper}}_H

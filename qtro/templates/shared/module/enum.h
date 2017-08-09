@@ -32,24 +32,26 @@ public:
     }
 
     static void registerTypes(const char* uri="{{module}}") {
-        qmlRegisterUncreatableType<{{module|ns}}::{{enum}}Enum>(uri, 1, 0, "{{enum}}", "Enumeration type can not be created");
+        qRegisterMetaType<{{enum|ns}}{{enum|returnType}}>();
+        qRegisterMetaTypeStreamOperators<{{enum|ns}}{{enum|returnType}}>();
+        qmlRegisterUncreatableType<{{enum|ns}}{{enum}}Enum>(uri, 1, 0, "{{enum}}", "Enumeration type can not be created");
     }
 };
 
 {{module|close_ns}}
 
-inline QDataStream &operator<<(QDataStream &ds, const {{module|ns}}::{{enum}}Enum::{{enum}} &obj)
+inline QDataStream &operator<<(QDataStream &ds, const {{module|ns}}{{enum}}Enum::{{enum}} &obj)
 {
     quint8 val = obj;
     ds << val;
     return ds;
 }
 
-inline QDataStream &operator>>(QDataStream &ds, {{module|ns}}::{{enum}}Enum::{{enum}} &obj) {
+inline QDataStream &operator>>(QDataStream &ds, {{module|ns}}{{enum}}Enum::{{enum}} &obj) {
     bool ok;
     quint8 val;
     ds >> val;
-    obj = {{module|ns}}::{{enum}}Enum::toEnum(val, &ok);
+    obj = {{module|ns}}{{enum}}Enum::toEnum(val, &ok);
     if (!ok)
         qWarning() << "received an invalid enum value for typeState, value =" << val;
     return ds;

@@ -6,6 +6,8 @@
 
 #include "{{class|lower}}.h"
 
+{{module|using_ns}}
+
 {{class}}::{{class}}(QObject *parent)
     : QAbstractListModel(parent)
 {

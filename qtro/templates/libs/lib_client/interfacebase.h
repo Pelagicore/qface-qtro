@@ -23,13 +23,13 @@ class {{class}} : public QObject
 {
     Q_OBJECT
 {% for property in properties %}
-    Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} {% if not property.readonly %}WRITE set{{property|upperfirst}} {% endif %}{% if not property.const %}NOTIFY {{property}}Changed{% endif %})
+    Q_PROPERTY({{property|ns}}{{property|returnType}} {{property}} READ {{property}} {% if not property.readonly %}WRITE set{{property|upperfirst}} {% endif %}{% if not property.const %}NOTIFY {{property}}Changed{% endif %})
 {% endfor %}
 {% for property in primitive_models %}
-    Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} CONSTANT)
+    Q_PROPERTY({{property|ns}}{{property|returnType}} {{property}} READ {{property}} CONSTANT)
 {% endfor %}
 {% for property in complex_models %}
-    Q_PROPERTY({{property|returnType}} {{property}} READ {{property}} CONSTANT)
+    Q_PROPERTY({{property|ns}}{{property|returnType}} {{property}} READ {{property}} CONSTANT)
 {% endfor %}
 public:
     {{class}}(QObject *parent = nullptr);

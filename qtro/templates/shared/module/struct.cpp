@@ -8,6 +8,8 @@
 
 #include <QtRemoteObjects>
 
+
+{{module|open_ns}}
 class {{class}}Data : public QSharedData
 {
 public:
@@ -31,6 +33,10 @@ public:
     {{field|returnType}} {{field}};
 {% endfor %}
 };
+
+{{module|close_ns}}
+
+{{module|using_ns}}
 
 // Class
 
@@ -66,8 +72,8 @@ public:
 void {{class}}::registerTypes(const char* uri)
 {
     Q_UNUSED(uri);
-    qRegisterMetaType<{{class}}>();
-    qRegisterMetaTypeStreamOperators<{{class}}>();
+    qRegisterMetaType<{{module|ns}}{{class}}>();
+    qRegisterMetaTypeStreamOperators<{{module|ns}}{{class}}>();
 }
 
 {% for field in struct.fields %}

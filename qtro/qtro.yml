@@ -9,6 +9,8 @@ apps:
             'main.cpp': 'main.cpp'
             'qml/Main.qml': 'qml/Main.qml'
             'qtquickcontrols2.conf': 'qtquickcontrols2.conf'
+        preserve:
+            - 'qml/Main.qml'
 general:
     system:
         destination: '{{dst}}'
@@ -109,6 +111,6 @@ server:
         documents:
             '{{interface|lower}}service.h': 'service.h'
             '{{interface|lower}}service.cpp': 'service.cpp'
-#         # preserve:
-#             # - '{{interface|lower}}engine.h'
-#             # - '{{interface|lower}}engine.cpp'
+        preserve:
+            - '{{interface|lower}}service.h'
+            - '{{interface|lower}}service.cpp'

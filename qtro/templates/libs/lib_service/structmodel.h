@@ -10,6 +10,8 @@
 
 #include "{{struct|lower}}.h"
 
+{{module|open_ns}}
+
 class {{class}} : public QAbstractListModel
 {
     Q_OBJECT
@@ -39,3 +41,5 @@ private:
     QList<{{struct}}> m_data;
     QHash<int, QByteArray> m_roleNames;
 };
+
+{{module|close_ns}}

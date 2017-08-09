@@ -58,7 +58,9 @@ class CustomFilters:
     @staticmethod
     def returnType(symbol):
         prefix = Filters.classPrefix
-        if symbol.type.is_enum:
+        if symbol.kind == 'enum':
+            return '{0}{1}Enum::{1}'.format(prefix, symbol)
+        elif symbol.type.is_enum:
             return '{0}{1}Enum::{1}'.format(prefix, symbol.type)
         return Filters.returnType(symbol)
 
