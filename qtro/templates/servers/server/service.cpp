@@ -4,8 +4,9 @@
 {{ cpp.preserved() }}
 
 #include "{{class|lower}}.h"
-#include "engine/{{interface|lower}}engine.h"
+#include "{{module.name|lower}}engine.h"
 
+{{module|using_ns}}
 
 {{class}}::{{class}}(QObject *parent)
     : {{interface}}ServiceBase(parent)

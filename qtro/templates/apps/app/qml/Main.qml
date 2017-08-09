@@ -22,7 +22,7 @@ ApplicationWindow {
 {% for module in system.modules %}
 {% for interface in module.interfaces %}
     {{interface}} {
-        id: {{interface|lower}}
+        id: {{interface|lowerfirst}}Client
     }
 {% endfor %}
 {% endfor %}

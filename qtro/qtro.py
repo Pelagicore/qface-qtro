@@ -39,10 +39,13 @@ class CustomFilters:
     @staticmethod
     def defaultValue(symbol):
         prefix = Filters.classPrefix
+        if symbol.kind == 'enum':
+            value = next(iter(symbol.members))
+            return '{0}{1}Enum::{1}::{2}'.format(prefix, symbol, value)
         t = symbol.type  # type: qface.domain.TypeSymbol
         if t.is_enum:
             value = next(iter(t.reference.members))
-            return '{0}{1}Enum::{2}'.format(prefix, symbol.type, value)
+            return '{0}{1}Enum::{1}::{2}'.format(prefix, t, value)
         return Filters.defaultValue(symbol)
 
     @staticmethod

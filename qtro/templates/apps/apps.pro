@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 
-{% if features.scaffold %}
-SUBDIRS += {{project|lower}}app
+{% if 'apps' in features %}
+SUBDIRS += demoapp
 {% endif %}

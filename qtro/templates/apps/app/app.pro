@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = {{project|lower}}app
+TARGET = demoapp
 DESTDIR = $$BUILD_DIR/bin
 
 QT += qml
@@ -12,5 +12,5 @@ SOURCES += main.cpp
 RESOURCES += qml.qrc
 
 {% for module in system.modules %}
-include( $$SOURCE_DIR/clients/{{module|identifier}}/lib/uselib.pri )
+include( $$SOURCE_DIR/libs/lib_client_{{module|identifier}}/useclientlib_{{module|identifier}}.pri )
 {% endfor %}

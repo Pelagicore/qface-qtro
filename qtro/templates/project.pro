@@ -1,15 +1,15 @@
 TEMPLATE = subdirs
 
-{% if features.apps %}
 SUBDIRS += apps
-{% endif %}
-SUBDIRS += clients
 SUBDIRS += servers
+SUBDIRS += plugins
+SUBDIRS += libs
 
-{% if features.apps %}
-apps.depends += clients
+apps.depends += plugins
 apps.depends += servers
-{% endif %}
-clients.depends += servers
+apps.depends += libs
+servers.depends += libs
+plugins.depends += libs
 
-include( {{project}}.pri )
+OTHER_FILES += .qmake.conf
+

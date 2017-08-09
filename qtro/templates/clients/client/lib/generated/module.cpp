@@ -40,6 +40,6 @@ void {{class}}::registerTypes(const char *uri)
 {% endfor %}
 
 {% for interface in module.interfaces %}
-    {{interface}}::registerQmlTypes(uri, 1, 0);
+    {{interface}}::registerTypes(uri, 1, 0);
 {% endfor %}
 }

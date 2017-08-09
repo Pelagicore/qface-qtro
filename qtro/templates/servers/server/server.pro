@@ -7,21 +7,20 @@ CONFIG += c++11
 DESTDIR = $$BUILD_DIR/bin
 TARGET = {{module}}_server
 CONFIG += console
-CONFIG -= app_bundle
+macos {
+    CONFIG -= app_bundle
+}
 
-include(generated/generated.pri)
+SOURCES += main.cpp
+HEADERS += {{module.name|lower}}engine.h
+SOURCES += {{module.name|lower}}engine.cpp
 
 {% for interface in module.interfaces %}
 HEADERS += {{interface|lower}}service.h
-{% endfor %}
-
-{% for interface in module.interfaces %}
 SOURCES += {{interface|lower}}service.cpp
 {% endfor %}
-SOURCES += main.cpp
 
-include ( engine/engine.pri )
-
+include( $$SOURCE_DIR/libs/lib_service_{{module|identifier}}/useservicelib_{{module|identifier}}.pri )
 
 
 

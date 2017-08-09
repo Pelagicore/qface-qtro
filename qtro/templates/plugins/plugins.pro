@@ -1,6 +1,5 @@
 TEMPLATE = subdirs
 
 {% for module in system.modules %}
-SUBDIRS += server_{{module|identifier}}
+SUBDIRS += plugin_{{module|identifier}}
 {% endfor %}
-

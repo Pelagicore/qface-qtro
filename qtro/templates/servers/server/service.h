@@ -10,14 +10,18 @@
 
 #include <QtCore>
 
-#include "generated/{{interface|lower}}servicebase.h"
+#include "{{interface|lower}}servicebase.h"
 
+{{module|open_ns}}
 
 class {{class}} : public {{interface}}ServiceBase
 {
     Q_OBJECT
 public:
     explicit {{class}}(QObject *parent=nullptr);
+private:
 };
+
+{{module|close_ns}}
 
 #endif // {{interface|upper}}_SERVICE_H

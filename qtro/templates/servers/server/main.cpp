@@ -5,7 +5,7 @@
 
 #include <QtCore>
 #include <QtRemoteObjects>
-#include "generated/core.h"
+#include "core.h"
 
 {% for interface in module.interfaces %}
 #include "{{interface|lower}}service.h"

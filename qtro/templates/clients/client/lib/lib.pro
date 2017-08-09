@@ -24,5 +24,5 @@ include( $$PWD/generated/generated.pri )
 RESOURCES += $$SOURCE_DIR/shared/project.qrc
 
 OTHER_FILES += $$SOURCE_DIR/shared/server.conf
-OTHER_FILES += uselib.pri
+OTHER_FILES += uselib{{module|identifier}}.pri
 

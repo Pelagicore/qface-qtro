@@ -1,96 +1,114 @@
+apps:
+    when: [apps]
+    source: 'apps/app'
+    system:
+        destination: '{{dst}}/apps/demoapp'
+        documents:
+            'demoapp.pro': 'app.pro'
+            'qml.qrc': 'qml.qrc'
+            'main.cpp': 'main.cpp'
+            'qml/Main.qml': 'qml/Main.qml'
+            'qtquickcontrols2.conf': 'qtquickcontrols2.conf'
 general:
     system:
         destination: '{{dst}}'
         documents:
             '{{project}}.pro': 'project.pro'
-            'lib{{project}}.pro': 'libproject.pro'
-            '{{project}}.pri': 'project.pri'
             'CMakeLists.txt': 'CMakeLists.txt'
             '.qmake.conf': 'qmake.conf'
-            'servers/servers.pro': 'servers/servers.pro'
-            'clients/clients.pro': 'clients/clients.pro'
             'apps/apps.pro': 'apps/apps.pro'
-            'servers/start.sh': 'servers/start.sh'
-            'servers/stop.sh': 'servers/stop.sh'
-        preserve:
-            - 'apps/apps.pro'
+            'plugins/plugins.pro': 'plugins/plugins.pro'
+            'servers/servers.pro': 'servers/servers.pro'
+            'libs/libs.pro': 'libs/libs.pro'
 shared:
+    source: 'shared'
     system:
-        destination: '{{dst}}'
+        destination: '{{dst}}/shared'
         documents:
-            'shared/server.conf': 'shared/server.conf'
-            'shared/project.qrc': 'shared/project.qrc'
-client:
+            'shared.pri': 'shared.pri'
+            'server.conf': 'server.conf'
+            'project.qrc': 'project.qrc'
+            'variantmodel.h': 'variantmodel.h'
+            'variantmodel.cpp': 'variantmodel.cpp'
     module:
-        destination: '{{dst}}/clients/{{module|identifier}}'
+        destination: '{{dst}}/shared/shared_{{module|identifier}}'
         documents:
-            '{{module|identifier}}.pro': 'clients/client/client.pro'
-            'plugin/{{module|identifier}}.pro': 'clients/client/plugin/plugin.pro'
-            'lib/lib.pro': 'clients/client/lib/lib.pro'
-            'lib/lib.pri': 'clients/client/lib/lib.pri'
-            'lib/uselib.pri': 'clients/client/lib/uselib.pri'
-            'CMakeLists.txt': 'clients/client/CMakeLists.txt'
-            'plugin/plugin.pro': 'clients/client/plugin/plugin.pro'
-            'plugin/qmldir': 'clients/client/plugin/qmldir'
-            'plugin/plugin.cpp': 'clients/client/plugin/plugin.cpp'
-            'plugin/plugin.h': 'clients/client/plugin/plugin.h'
-            'docs/client.qdocconf': 'clients/client/docs/online.qdocconf'
-            'docs/client-project.qdocconf': 'clients/client/docs/project.qdocconf'
-            'docs/docs.pri': 'clients/client/docs/docs.pri'
-            'lib/generated/generated.pri': 'clients/client/lib/generated/generated.pri'
-            'lib/generated/core.h': 'clients/client/lib/generated/core.h'
-            'lib/generated/core.cpp': 'clients/client/lib/generated/core.cpp'
-    interface:
-        destination: '{{dst}}/clients/{{module|identifier}}'
-        documents:
-            'lib/{{interface|lower}}.h': 'clients/client/lib/interface.h'
-            'lib/{{interface|lower}}.cpp': 'clients/client/lib/interface.cpp'
-            'lib/generated/abstract{{interface|lower}}.h': 'clients/client/lib/generated/interfacebase.h'
-            'lib/generated/abstract{{interface|lower}}.cpp': 'clients/client/lib/generated/interfacebase.cpp'
-server:
-    module:
-        destination: '{{dst}}/servers/{{module|identifier}}'
-        documents:
-            '{{module|identifier}}.json': 'servers/server/meta.json'
-            '{{module|identifier}}.pro': 'servers/server/server.pro'
-            'CMakeLists.txt': 'servers/server/CMakeLists.txt'
-            'main.cpp': 'servers/server/main.cpp'
-            'generated/generated.pri': 'servers/server/generated/generated.pri'
-            'generated/variantmodel.h': 'servers/server/generated/variantmodel.h'
-            'generated/variantmodel.cpp': 'servers/server/generated/variantmodel.cpp'
-    interface:
-        destination: '{{dst}}/servers/{{module|identifier}}'
-        documents:
-            '{{interface|lower}}service.h': 'servers/server/service.h'
-            '{{interface|lower}}service.cpp': 'servers/server/service.cpp'
-            'generated/{{interface|lower}}servicebase.h': 'servers/server/generated/servicebase.h'
-            'generated/{{interface|lower}}servicebase.cpp': 'servers/server/generated/servicebase.cpp'
-        preserve:
-            - '{{interface|lower}}service.h'
-            - '{{interface|lower}}service.cpp'
+            'shared_{{module|identifier}}.pri': 'module/module.pri'
     struct:
         documents:
-            'generated/{{struct|lower}}model.h': 'servers/server/generated/structmodel.h'
-            'generated/{{struct|lower}}model.cpp': 'servers/server/generated/structmodel.cpp'
-engine:
-    module:
-        destination: '{{dst}}/servers/{{module|identifier}}/engine'
+            '{{struct|lower}}.h': 'module/struct.h'
+            '{{struct|lower}}.cpp': 'module/struct.cpp'
+    enum:
         documents:
-            'engine.pri': 'servers/server/engine/engine.pri'
+            '{{enum|lower}}enum.h': 'module/enum.h'
+plugins:
+    source: 'plugins/plugin'
+    module:
+        destination: '{{dst}}/plugins/plugin_{{module|identifier}}'
+        documents:
+            'plugin_{{module|identifier}}.pro': 'plugin.pro'
+            'qmldir': 'qmldir'
+            'plugin.cpp': 'plugin.cpp'
+            'plugin.h': 'plugin.h'
+lib_service:
+    source: 'libs/lib_service'
+    module:
+        destination: '{{dst}}/libs/lib_service_{{module|identifier}}'
+        documents:
+            'lib_service_{{module|identifier}}.pro': 'service.pro'
+            'useservicelib_{{module|identifier}}.pri': 'useservicelib.pri'
+            'core.h': 'core.h'
+            'core.cpp': 'core.cpp'
     interface:
         documents:
-            '{{interface|lower}}engine.h': 'servers/server/engine/engine.h'
-            '{{interface|lower}}engine.cpp': 'servers/server/engine/engine.cpp'
-        preserve:
-            - '{{interface|lower}}engine.h'
-            - '{{interface|lower}}engine.cpp'
-scaffold:
-    when: scaffold
-    system:
-        destination: '{{dst}}/apps/{{project|lower}}app'
+            '{{interface|lower}}servicebase.h': 'servicebase.h'
+            '{{interface|lower}}servicebase.cpp': 'servicebase.cpp'
+    struct:
         documents:
-            '{{project|lower}}app.pro': 'apps/app/app.pro'
-            'qml.qrc': 'apps/app/qml.qrc'
-            'main.cpp': 'apps/app/main.cpp'
-            'qml/Main.qml': 'apps/app/qml/Main.qml'
-            'qtquickcontrols2.conf': 'apps/app/qtquickcontrols2.conf'
+            '{{struct|lower}}model.h': 'structmodel.h'
+            '{{struct|lower}}model.cpp': 'structmodel.cpp'
+
+
+lib_client:
+    source: 'libs/lib_client'
+    module:
+        destination: '{{dst}}/libs/lib_client_{{module|identifier}}'
+        documents:
+            'lib_client_{{module|identifier}}.pro': 'client.pro'
+            'useclientlib_{{module|identifier}}.pri': 'useclientlib.pri'
+            'CMakeLists.txt': 'CMakeLists.txt'
+            'core.h': 'core.h'
+            'core.cpp': 'core.cpp'
+#             'docs/client.qdocconf': 'clients/client/docs/online.qdocconf'
+#             'docs/client-project.qdocconf': 'clients/client/docs/project.qdocconf'
+#             'docs/docs.pri': 'clients/client/docs/docs.pri'
+    interface:
+        documents:
+            '{{interface|lower}}.h': 'interface.h'
+            '{{interface|lower}}.cpp': 'interface.cpp'
+            '{{interface|lower}}base.h': 'interfacebase.h'
+            '{{interface|lower}}base.cpp': 'interfacebase.cpp'
+            '{{interface|lower}}replica.h': 'replica.h'
+            '{{interface|lower}}replica.cpp': 'replica.cpp'
+    struct:
+        documents:
+            '{{struct|lower}}model.h': 'structmodel.h'
+            '{{struct|lower}}model.cpp': 'structmodel.cpp'
+server:
+    source: 'servers/server'
+    module:
+        destination: '{{dst}}/servers/server_{{module|identifier}}'
+        documents:
+            '{{module|identifier}}.json': 'meta.json'
+            'server_{{module|identifier}}.pro': 'server.pro'
+            'CMakeLists.txt': 'CMakeLists.txt'
+            'main.cpp': 'main.cpp'
+            '{{module.name|lower}}engine.h': 'engine.h'
+            '{{module|lower}}engine.cpp': 'engine.cpp'
+    interface:
+        documents:
+            '{{interface|lower}}service.h': 'service.h'
+            '{{interface|lower}}service.cpp': 'service.cpp'
+#         # preserve:
+#             # - '{{interface|lower}}engine.h'
+#             # - '{{interface|lower}}engine.cpp'
