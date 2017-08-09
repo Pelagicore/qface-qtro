@@ -22,10 +22,9 @@
 #include "variantmodel.h"
 
 
-{{module|open_ns}}
-
 Q_DECLARE_LOGGING_CATEGORY(lib_client_{{module|identifier}})
 
+{{module|open_ns}}
 
 class Core : public QObject
 {

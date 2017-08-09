@@ -3,12 +3,14 @@
 {% set primitive_models = interface.properties|selectattr('is_primitive_model')|list %}
 {% set complex_models = interface.properties|selectattr('is_complex_model')|list %}
 {% set properties = interface.properties|rejectattr('is_model')|list %}
+{% set cat = 'lib_service_{0}'.format(module|identifier) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
 ****************************************************************************/
 
 #include "{{interface|lower}}servicebase.h"
+
 
 {{module|using_ns}}
 
@@ -25,6 +27,7 @@
 {% endif %}
 {% endfor %}
 {
+    qCDebug({{cat}}) << "{{class}}::{{class}}()";
 }
 
 {% for property in properties %}
@@ -59,7 +62,7 @@ void {{class}}::push{{property|upperfirst}}({{property|parameters}})
 {% for operation in interface.operations %}
 {{operation|returnType}} {{class}}::{{operation}}({{operation|parameters}})
 {
-    qDebug() << "{{class}}::{{operation}}(...): Not implemented";
+    qCDebug({{cat}}) << "{{class}}::{{operation}}(...): Not implemented";
     {% for parameter in operation.parameters %}
     Q_UNUSED({{parameter}})
     {% endfor %}

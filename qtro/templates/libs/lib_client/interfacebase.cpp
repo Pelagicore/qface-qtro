@@ -3,6 +3,7 @@
 {% set primitive_models = interface.properties|selectattr('is_primitive_model')|list %}
 {% set complex_models = interface.properties|selectattr('is_complex_model')|list %}
 {% set properties = interface.properties|rejectattr('is_model')|list %}
+{% set cat = 'lib_client_{0}'.format(module|identifier) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
@@ -33,6 +34,7 @@
 {% endfor %}
 
 {
+    qCDebug({{cat}}) << "{{class}}::{{class}}()";
     QRemoteObjectNode* node = Core::instance()->node();
 
     m_replica.reset(node->acquire<{{interface}}Replica>("{{interface.qualified_name}}"));
@@ -106,6 +108,7 @@ void {{class}}::set{{property|upperfirst}}({{ property|parameterType }})
 
 void {{class}}::setupConnections()
 {
+  qCDebug({{cat}}) << "{{class}}::setupConnections()";
   {% for property in interface.properties if not property.type.is_model %}
   connect(m_replica.data(), &{{interface}}Replica::{{property}}Changed, this, &{{class}}::{{property}}Changed);
   {% endfor %}

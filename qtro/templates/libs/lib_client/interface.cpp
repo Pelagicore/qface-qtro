@@ -1,4 +1,5 @@
 {% set class = '{0}'.format(interface) %}
+{% set cat = 'lib_client_{0}'.format(module|identifier) %}
 /****************************************************************************
 ** This is a preserved file.
 ** Changes will not be overriden by the generator.
@@ -36,6 +37,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 {{class}}::{{class}}(QObject *parent)
     : {{interface}}Base(parent)
 {
+    qCDebug({{cat}}) << "{{class}}::{{class}}()";
 }
 
 {{class}}::~{{class}}()
@@ -44,6 +46,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
 
 void {{class}}::registerQmlType(const char* uri, int majorVersion, int minorVersion)
 {
+    qCDebug({{cat}}) << "{{class}}::registerQmlType()";
     Core::registerTypes(uri);
     {% if 'singleton' in interface.tags %}
     qmlRegisterSingletonType<{{class}}>(uri, majorVersion, minorVersion, "{{interface}}", {{class|lower}}_singletontype_provider);

@@ -1,10 +1,15 @@
 {% set class = "Core" %}
+{% set cat = 'lib_service_{0}'.format(module|identifier) %}
 /****************************************************************************
 ** This is an auto-generated file.
 ** Do not edit! All changes made to it will be lost.
 ****************************************************************************/
 
 #include "{{class|lower}}.h"
+
+
+Q_LOGGING_CATEGORY({{cat}}, "lib.service.{{module}}")
+
 
 {{module|using_ns}}
 
@@ -14,7 +19,7 @@
     : QObject(parent)
     , m_host(nullptr)
 {
-    qDebug() << "{{class}}::{{class}}()";
+    qCDebug({{cat}}) << "{{class}}::{{class}}()";
     init();
 }
 
@@ -24,7 +29,7 @@
 
 void {{class}}::init()
 {
-    qDebug() << "{{class}}::init()";
+    qCDebug({{cat}}) << "{{class}}::init()";
     QSettings settings(":/server.conf", QSettings::IniFormat);
     settings.beginGroup("{{module}}");
     QUrl url = QUrl(settings.value("Registry", "local:{{module}}").toString());
@@ -38,7 +43,7 @@ void {{class}}::init()
 
 {{class}}* {{class}}::instance()
 {
-    qDebug() << "{{class}}::instance()";
+    qCDebug({{cat}}) << "{{class}}::instance()";
     if (!s_instance) {
         s_instance = new {{class}}(QCoreApplication::instance());
     }
@@ -48,7 +53,7 @@ void {{class}}::init()
 
 QRemoteObjectRegistryHost* {{class}}::host() const
 {
-    qDebug() << "{{class}}::host()";
+    qCDebug({{cat}}) << "{{class}}::host()";
     Q_ASSERT(m_host);
     return m_host;
 }
@@ -72,5 +77,5 @@ void {{class}}::registerTypes(const char* uri)
 
 void {{class}}::reportError(QRemoteObjectNode::ErrorCode code)
 {
-    qDebug() << "Error: " << code;
+    qCWarning({{cat}}) << "Error: " << code;
 }

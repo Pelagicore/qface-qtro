@@ -7,12 +7,11 @@
 
 #include "{{class|lower}}.h"
 
+Q_LOGGING_CATEGORY({{cat}}, "lib.client.{{module}}")
+
 {{module|using_ns}}
 
 {{class}}* {{class}}::s_instance(nullptr);
-
-Q_LOGGING_CATEGORY({{cat}}, "lib.client.{{module}}")
-
 
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)

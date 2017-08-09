@@ -19,9 +19,9 @@
 #include "{{struct|lower}}model.h"
 {% endfor %}
 
+Q_DECLARE_LOGGING_CATEGORY(lib_service_{{module|identifier}})
 
 {{module|open_ns}}
-
 
 class {{class}} : public QObject
 {
