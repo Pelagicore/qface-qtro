@@ -130,19 +130,20 @@ QDataStream& {{class}}::fromStream(QDataStream& stream)
 }
 
 
-bool operator==(const {{class}} &left, const {{class}} &right)
+bool {{class}}::operator==(const {{class}} &other) const
 {
     return (
 {% for field in struct.fields %}
-        left.{{field}}() == right.{{field}}(){% if not loop.last %} &&
+        {{field}}() == other.{{field}}(){% if not loop.last %} &&
 {% endif %}
 {% endfor %}
 
     );
 }
 
-bool operator!=(const {{class}} &left, const {{class}} &right) {
-    return !(left == right);
+bool {{class}}::operator!=(const {{class}} &other) const
+{
+    return !(*this == other);
 }
 
 QDataStream &operator<<(QDataStream &ds, const {{class}} &obj) {

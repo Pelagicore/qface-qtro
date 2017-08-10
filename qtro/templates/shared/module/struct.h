@@ -39,6 +39,8 @@ public:
 
     QDataStream& toStream(QDataStream& stream) const;
     QDataStream& fromStream(QDataStream& stream);
+    bool operator==(const {{class}} &other) const;
+    bool operator!=(const {{class}} &other) const;
 private:
     QExplicitlySharedDataPointer <{{class}}Data> d;
 };
@@ -46,8 +48,6 @@ private:
 
 {{module|close_ns}}
 
-bool operator==(const {{module|ns}}{{class}} &left, const {{module|ns}}{{class}} &right);
-bool operator!=(const {{module|ns}}{{class}} &left, const {{module|ns}}{{class}} &right);
 QDataStream &operator<<(QDataStream &ds, const {{module|ns}}{{class}} &obj);
 QDataStream &operator>>(QDataStream &ds, {{module|ns}}{{class}} &obj);
 
