@@ -41,7 +41,7 @@ QVariant {{class}}::data(const QModelIndex &index, int role) const
     switch(role) {
     {% for field in struct.fields %}
     case Roles::{{field|upperfirst}}Role:
-        return QVariant::fromValue({{struct|lower}}.{{field}}());
+        return QVariant::fromValue({{struct|lower}}.{{field}});
     {% endfor %}
     }
     return QVariant();

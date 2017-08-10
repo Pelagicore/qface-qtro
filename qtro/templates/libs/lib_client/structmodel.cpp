@@ -18,16 +18,14 @@ int {{class}}::count() const
     return rowCount(QModelIndex());
 }
 
-{{struct}} {{class}}::get(int index)
+{{struct}} {{class}}::get(int row)
 {
     {{struct}} {{struct|lower}};
 
-    const QModelIndex& modelIndex = createIndex(index, 0);
+    const QModelIndex& index = createIndex(row, 0);
 
 {% for field in struct.fields %}
-    QVariant {{field}}Value = data(modelIndex, {{field|upperfirst}}Role);
-    {{struct|lower}}.set{{field|upperfirst}}({{field}}Value.value<{{field|returnType}}>());
-
+    {{struct|lower}}.{{field}} = data(index, {{field|upperfirst}}Role).value<{{field|returnType}}>();
 {% endfor %}
     return {{struct|lower}};
 }

@@ -5,36 +5,7 @@
 ****************************************************************************/
 
 #include "{{class|lower}}.h"
-
 #include <QtRemoteObjects>
-
-
-{{module|open_ns}}
-class {{class}}Data : public QSharedData
-{
-public:
-    {{class}}Data()
-        : QSharedData()
-    {% for field in struct.fields %}
-        , {{field}}({{field|defaultValue}})
-    {% endfor %}
-    {
-    }
-    {{class}}Data(const {{class}}Data &other)
-        : QSharedData(other)
-    {% for field in struct.fields %}
-        , {{field}}(other.{{field}})
-    {% endfor %}
-    {
-    }
-
-public:
-{% for field in struct.fields %}
-    {{field|returnType}} {{field}};
-{% endfor %}
-};
-
-{{module|close_ns}}
 
 {{module|using_ns}}
 
@@ -56,16 +27,9 @@ public:
 */
 
 {{class}}::{{class}}()
-    : d(new {{class}}Data)
-{
-}
-
-{{class}}::{{class}}(const {{class}} &other)
-    : d(other.d)
-{
-}
-
-{{class}}::~{{class}}()
+{% for field in struct.fields %}
+{% if loop.first %}    :{% else %}    ,{% endif %} {{field}}({{field|defaultValue}})
+{% endfor %}
 {
 }
 
@@ -74,6 +38,36 @@ void {{class}}::registerTypes(const char* uri)
     Q_UNUSED(uri);
     qRegisterMetaType<{{module|ns}}{{class}}>();
     qRegisterMetaTypeStreamOperators<{{module|ns}}{{class}}>();
+}
+
+bool {{class}}::operator==(const {{class}} &other) const
+{
+    return (
+{% for field in struct.fields %}
+        this->{{field}} == other.{{field}}{% if not loop.last %} &&
+{% endif %}
+{% endfor %}
+
+    );
+}
+
+bool {{class}}::operator!=(const {{class}} &other) const
+{
+    return !(*this == other);
+}
+
+QDataStream &operator<<(QDataStream &stream, const {{class}} &obj) {
+    {% for field in struct.fields %}
+    stream << obj.{{field}};
+    {% endfor %}
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, {{class}} &obj) {
+    {% for field in struct.fields %}
+    stream >> obj.{{field}};
+    {% endfor %}
+    return stream;
 }
 
 {% for field in struct.fields %}
@@ -87,69 +81,4 @@ void {{class}}::registerTypes(const char* uri)
    {{doc.description}}
 {% endwith %}
 */
-void {{class}}::set{{field|upperfirst}}({{field|parameterType}})
-{
-    d->{{field}} = {{field}};
-}
-{{field|returnType}} {{class}}::{{field}}() const
-{
-    return d->{{field}};
-}
-
 {% endfor %}
-
-
-
-{{class}} {{class}}::clone()
-{
-    {{class}} other(*this);
-    other.d.detach();
-    return other;
-}
-
-{{class}} &{{class}}::operator=(const {{class}} &other)
-{
-    d = other.d;
-    return *this;
-}
-
-QDataStream& {{class}}::toStream(QDataStream& stream) const
-{
-  {% for field in struct.fields %}
-  stream << d->{{field}};
-  {% endfor %}
-  return stream;
-}
-
-QDataStream& {{class}}::fromStream(QDataStream& stream)
-{
-  {% for field in struct.fields %}
-  stream >> d->{{field}};
-  {% endfor %}
-  return stream;
-}
-
-
-bool {{class}}::operator==(const {{class}} &other) const
-{
-    return (
-{% for field in struct.fields %}
-        {{field}}() == other.{{field}}(){% if not loop.last %} &&
-{% endif %}
-{% endfor %}
-
-    );
-}
-
-bool {{class}}::operator!=(const {{class}} &other) const
-{
-    return !(*this == other);
-}
-
-QDataStream &operator<<(QDataStream &ds, const {{class}} &obj) {
-    return obj.toStream(ds);
-}
-
-QDataStream &operator>>(QDataStream &ds, {{class}} &obj) {
-    return obj.fromStream(ds);
-}

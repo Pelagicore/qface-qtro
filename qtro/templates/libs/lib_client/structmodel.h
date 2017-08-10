@@ -23,7 +23,7 @@ public:
 {% endfor %}
     };
     {{class}}(QObject *parent = nullptr);
-    Q_INVOKABLE {{struct}} get(int index);
+    Q_INVOKABLE {{struct}} get(int row);
     int count() const;
 Q_SIGNALS:
    void countChanged(int count);

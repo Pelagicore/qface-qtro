@@ -52,7 +52,8 @@ inline QDataStream &operator>>(QDataStream &ds, {{module|ns}}{{enum}}Enum::{{enu
     quint8 val;
     ds >> val;
     obj = {{module|ns}}{{enum}}Enum::toEnum(val, &ok);
-    if (!ok)
+    if (!ok) {
         qWarning() << "received an invalid enum value for typeState, value =" << val;
+    }
     return ds;
 }
