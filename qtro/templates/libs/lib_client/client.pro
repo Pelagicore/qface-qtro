@@ -15,8 +15,6 @@ SOURCES += core.cpp
 {% for interface in module.interfaces %}
 HEADERS += {{interface|lower}}.h
 SOURCES += {{interface|lower}}.cpp
-HEADERS += {{interface|lower}}base.h
-SOURCES += {{interface|lower}}base.cpp
 HEADERS += {{interface|lower}}replica.h
 SOURCES += {{interface|lower}}replica.cpp
 

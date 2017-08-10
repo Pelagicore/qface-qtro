@@ -88,8 +88,6 @@ lib_client:
         documents:
             '{{interface|lower}}.h': 'interface.h'
             '{{interface|lower}}.cpp': 'interface.cpp'
-            '{{interface|lower}}base.h': 'interfacebase.h'
-            '{{interface|lower}}base.cpp': 'interfacebase.cpp'
             '{{interface|lower}}replica.h': 'replica.h'
             '{{interface|lower}}replica.cpp': 'replica.cpp'
     struct:
