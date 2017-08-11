@@ -7,6 +7,9 @@
 #ifndef {{class|upper}}_H
 #define {{class|upper}}_H
 
+// TODO: Move the role names to the struct
+// TODO: Move the conversion of a model index to the struct
+// TODO: extract these converstion into a helper class?
 
 #include <QtCore>
 
