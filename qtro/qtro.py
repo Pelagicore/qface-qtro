@@ -142,8 +142,9 @@ def app(src, dst, reload, cmd, scaffold, apps, servers):
     if servers:
         features.add('servers')
     if reload:
-        script = Path(__file__).abspath()
-        monitor(script, src, dst)
+        argv = sys.argv.copy()
+        argv.remove('--reload')
+        monitor(here, src, dst, argv)
     else:
         run(src, dst)
         sh(cmd)
