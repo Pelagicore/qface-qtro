@@ -7,10 +7,9 @@ apps:
             'demoapp.pro': 'app.pro'
             'qml.qrc': 'qml.qrc'
             'main.cpp': 'main.cpp'
-            'qml/Main.qml': 'qml/Main.qml'
             'qtquickcontrols2.conf': 'qtquickcontrols2.conf'
         preserve:
-            - 'qml/Main.qml'
+            'qml/Main.qml': 'qml/Main.qml'
 general:
     system:
         destination: '{{dst}}'
@@ -102,14 +101,9 @@ server:
             'server_{{module|identifier}}.pro': 'server.pro'
             'CMakeLists.txt': 'CMakeLists.txt'
             'main.cpp': 'main.cpp'
+        preserve:
             '{{module.name|lower}}engine.h': 'engine.h'
             '{{module|lower}}engine.cpp': 'engine.cpp'
-        preserve:
-            - '{{module.name|lower}}engine.h'
-            - '{{module|lower}}engine.cpp'
-
     interface:
-        documents:
-            '{{interface|lower}}service.cpp': 'service.cpp'
         preserve:
-            - '{{interface|lower}}service.cpp'
+            '{{interface|lower}}service.cpp': 'service.cpp'
