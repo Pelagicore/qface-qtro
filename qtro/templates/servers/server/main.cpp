@@ -21,7 +21,7 @@ void registerModel(QRemoteObjectHostBase* host, QAbstractItemModel* model, const
     }
     QVector<int> roles = model->roleNames().keys().toVector();
     host->enableRemoting(model, name, roles);
-    qDebug() << "model at: " << name;
+    qDebug() << "register model at: " << name;
 }
 
 int main(int argc, char *argv[])
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     // create {{interface}} service
     QScopedPointer<{{interface}}Service> {{interface|lowerfirst}}Service(new {{interface}}Service);
     host->enableRemoting({{interface|lowerfirst}}Service.data(), "{{interface.qualified_name}}");
-    qDebug() << "service at: {{interface.qualified_name}}";
+    qDebug() << "register service at: {{interface.qualified_name}}";
 {% for property in interface.properties if property.type.is_model %}
     registerModel(host, {{interface|lowerfirst}}Service->{{property}}(), "{{property.qualified_name}}");
 {% endfor %}

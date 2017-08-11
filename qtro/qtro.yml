@@ -105,9 +105,6 @@ server:
             'server_{{module|identifier}}.pro': 'server.pro'
             'CMakeLists.txt': 'CMakeLists.txt'
             'main.cpp': 'main.cpp'
-        preserve:
-            '{{module.name|lower}}engine.h': 'engine.h'
-            '{{module|lower}}engine.cpp': 'engine.cpp'
     interface:
         # documents:
         preserve:

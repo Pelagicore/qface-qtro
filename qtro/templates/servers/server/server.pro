@@ -12,8 +12,6 @@ macos {
 }
 
 SOURCES += main.cpp
-HEADERS += {{module.name|lower}}engine.h
-SOURCES += {{module.name|lower}}engine.cpp
 
 {% for interface in module.interfaces %}
 SOURCES += {{interface|lower}}service.cpp
