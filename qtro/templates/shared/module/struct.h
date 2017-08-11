@@ -16,7 +16,7 @@ class {{class}}
 {
     Q_GADGET
 {% for field in struct.fields %}
-    Q_PROPERTY({{field|ns}}{{field|returnType}} {{field}} MEMBER {{field}})
+    Q_PROPERTY({{field|ns}}{{field|returnType}} {{field}} READ {{field}} WRITE set{{field|upperfirst}})
 {% endfor %}
 public: // operations
     enum ModelRole {
@@ -30,9 +30,16 @@ public: // operations
     bool operator==(const {{class}} &other) const;
     bool operator!=(const {{class}} &other) const;
     QVariant toValue(ModelRole role) const;
+
+{% for field in struct.fields %}
+    void set{{field|upperfirst}}({{field|parameterType}});
+    {{field|returnType}} {{field}}() const;
+
+{% endfor %}
+
 public: // data
 {% for field in struct.fields %}
-    {{field|returnType}} {{field}};
+    {{field|returnType}} m_{{field}};
 {% endfor %}
 };
 

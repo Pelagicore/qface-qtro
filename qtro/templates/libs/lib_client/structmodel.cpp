@@ -25,7 +25,7 @@ int {{class}}::count() const
     const QModelIndex& index = createIndex(row, 0);
 
 {% for field in struct.fields %}
-    {{struct|lower}}.{{field}} = index.data({{struct}}::{{field|upperfirst}}Role).value<{{field|returnType}}>();
+    {{struct|lower}}.set{{field|upperfirst}}(index.data({{struct}}::{{field|upperfirst}}Role).value<{{field|returnType}}>());
 {% endfor %}
 
     return {{struct|lower}};

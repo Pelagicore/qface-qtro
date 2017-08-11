@@ -28,57 +28,9 @@
 
 {{class}}::{{class}}()
 {% for field in struct.fields %}
-{% if loop.first %}    :{% else %}    ,{% endif %} {{field}}({{field|defaultValue}})
+{% if loop.first %}    :{% else %}    ,{% endif %} m_{{field}}({{field|defaultValue}})
 {% endfor %}
 {
-}
-
-void {{class}}::registerTypes(const char* uri)
-{
-    Q_UNUSED(uri);
-    qRegisterMetaType<{{module|ns}}{{class}}>();
-    qRegisterMetaTypeStreamOperators<{{module|ns}}{{class}}>();
-}
-
-QVariant {{class}}::toValue(ModelRole role) const
-{
-    switch(role) {
-{% for field in struct.fields %}
-    case {{field|upperfirst}}Role:
-        return QVariant::fromValue(this->{{field}});
-    {% endfor %}
-    }
-    return QVariant();
-}
-
-bool {{class}}::operator==(const {{class}} &other) const
-{
-    return (
-{% for field in struct.fields %}
-        this->{{field}} == other.{{field}}{% if not loop.last %} &&
-{% endif %}
-{% endfor %}
-
-    );
-}
-
-bool {{class}}::operator!=(const {{class}} &other) const
-{
-    return !(*this == other);
-}
-
-QDataStream &operator<<(QDataStream &stream, const {{class}} &obj) {
-    {% for field in struct.fields %}
-    stream << obj.{{field}};
-    {% endfor %}
-    return stream;
-}
-
-QDataStream &operator>>(QDataStream &stream, {{class}} &obj) {
-    {% for field in struct.fields %}
-    stream >> obj.{{field}};
-    {% endfor %}
-    return stream;
 }
 
 {% for field in struct.fields %}
@@ -92,4 +44,68 @@ QDataStream &operator>>(QDataStream &stream, {{class}} &obj) {
    {{doc.description}}
 {% endwith %}
 */
+void {{class}}::set{{field|upperfirst}}({{field|parameterType}})
+{
+    if(m_{{field}} != {{field}}) {
+        m_{{field}} = {{field}};
+    }
+}
+{{field|returnType}} {{class}}::{{field}}() const
+{
+    return m_{{field}};
+}
+
 {% endfor %}
+
+
+void {{class}}::registerTypes(const char* uri)
+{
+    Q_UNUSED(uri);
+    qRegisterMetaType<{{module|ns}}{{class}}>();
+    qRegisterMetaTypeStreamOperators<{{module|ns}}{{class}}>();
+}
+
+QVariant {{class}}::toValue(ModelRole role) const
+{
+    switch(role) {
+{% for field in struct.fields %}
+    case {{field|upperfirst}}Role:
+        return QVariant::fromValue({{field}}());
+    {% endfor %}
+    }
+    return QVariant();
+}
+
+bool {{class}}::operator==(const {{class}} &other) const
+{
+    return (
+{% for field in struct.fields %}
+        {{field}}() == other.{{field}}(){% if not loop.last %} &&
+{% endif %}
+{% endfor %}
+
+    );
+}
+
+bool {{class}}::operator!=(const {{class}} &other) const
+{
+    return !(*this == other);
+}
+
+QDataStream &operator<<(QDataStream &stream, const {{class}} &obj) {
+    {% for field in struct.fields %}
+    stream << obj.{{field}}();
+    {% endfor %}
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, {{class}} &obj) {
+
+    {% for field in struct.fields %}
+    {{field|returnType}} {{field}}Value;
+    stream >> {{field}}Value;
+    obj.set{{field|upperfirst}}({{field}}Value);
+
+    {% endfor %}
+    return stream;
+}
