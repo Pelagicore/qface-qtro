@@ -40,6 +40,17 @@ void {{class}}::registerTypes(const char* uri)
     qRegisterMetaTypeStreamOperators<{{module|ns}}{{class}}>();
 }
 
+QVariant {{class}}::toValue(ModelRole role) const
+{
+    switch(role) {
+{% for field in struct.fields %}
+    case {{field|upperfirst}}Role:
+        return QVariant::fromValue(this->{{field}});
+    {% endfor %}
+    }
+    return QVariant();
+}
+
 bool {{class}}::operator==(const {{class}} &other) const
 {
     return (

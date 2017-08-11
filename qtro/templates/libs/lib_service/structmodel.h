@@ -17,11 +17,6 @@ class {{class}} : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
-    enum Roles {
-{% for field in struct.fields %}
-        {{field|upperfirst}}Role = Qt::UserRole + {{loop.index}},
-{% endfor %}
-    };
     {{class}}(QObject *parent = nullptr);
     Q_INVOKABLE {{struct}} get(int index);
     int count() const;

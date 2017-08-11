@@ -12,7 +12,7 @@
     : QAbstractListModel(parent)
 {
     {% for field in struct.fields %}
-    m_roleNames.insert(Roles::{{field|upperfirst}}Role, QByteArray("{{field}}"));
+    m_roleNames.insert({{struct}}::{{field|upperfirst}}Role, QByteArray("{{field}}"));
     {% endfor %}
 }
 
@@ -37,14 +37,8 @@ QVariant {{class}}::data(const QModelIndex &index, int role) const
     if(index.row() < 0 || index.row() >= count()) {
         return QVariant();
     }
-    const {{struct}} &{{struct|lower}} = m_data.at(index.row());
-    switch(role) {
-    {% for field in struct.fields %}
-    case Roles::{{field|upperfirst}}Role:
-        return QVariant::fromValue({{struct|lower}}.{{field}});
-    {% endfor %}
-    }
-    return QVariant();
+    const {{struct}}& {{struct|lowerfirst}} = m_data.at(index.row());
+    return {{struct|lowerfirst}}.toValue(static_cast<{{struct}}::ModelRole>(role));
 }
 
 QHash<int, QByteArray> {{class}}::roleNames() const
