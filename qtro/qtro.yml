@@ -1,15 +1,3 @@
-apps:
-    when: [apps]
-    source: 'apps/app'
-    system:
-        destination: '{{dst}}/apps/demoapp'
-        documents:
-            'demoapp.pro': 'app.pro'
-            'qml.qrc': 'qml.qrc'
-            'main.cpp': 'main.cpp'
-            'qtquickcontrols2.conf': 'qtquickcontrols2.conf'
-        preserve:
-            'qml/Main.qml': 'qml/Main.qml'
 general:
     system:
         destination: '{{dst}}'
@@ -22,7 +10,7 @@ general:
             'servers/servers.pro': 'servers/servers.pro'
             'libs/libs.pro': 'libs/libs.pro'
             'shared/shared.pro': 'shared/shared.pro'
-shared:
+lib_shared:
     system:
         source: 'shared/lib_shared'
         destination: '{{dst}}/shared/lib_shared/'
@@ -46,33 +34,6 @@ shared:
     enum:
         documents:
             '{{enum|lower}}enum.h': 'enum.h'
-plugins:
-    source: 'plugins/plugin'
-    module:
-        destination: '{{dst}}/plugins/plugin_{{module|identifier}}'
-        documents:
-            'plugin_{{module|identifier}}.pro': 'plugin.pro'
-            'qmldir': 'qmldir'
-            'plugin.cpp': 'plugin.cpp'
-            'plugin.h': 'plugin.h'
-lib_service:
-    source: 'libs/lib_service'
-    module:
-        destination: '{{dst}}/libs/lib_service_{{module|identifier}}'
-        documents:
-            'lib_service_{{module|identifier}}.pro': 'service.pro'
-            'use_lib_service_{{module|identifier}}.pri': 'use_lib_service.pri'
-            'core.h': 'core.h'
-            'core.cpp': 'core.cpp'
-    interface:
-        documents:
-            '{{interface|lower}}service.h': 'service.h'
-    struct:
-        documents:
-            '{{struct|lower}}model.h': 'structmodel.h'
-            '{{struct|lower}}model.cpp': 'structmodel.cpp'
-
-
 lib_client:
     source: 'libs/lib_client'
     module:
@@ -96,6 +57,31 @@ lib_client:
         documents:
             '{{struct|lower}}model.h': 'structmodel.h'
             '{{struct|lower}}model.cpp': 'structmodel.cpp'
+lib_service:
+    source: 'libs/lib_service'
+    module:
+        destination: '{{dst}}/libs/lib_service_{{module|identifier}}'
+        documents:
+            'lib_service_{{module|identifier}}.pro': 'service.pro'
+            'use_lib_service_{{module|identifier}}.pri': 'use_lib_service.pri'
+            'core.h': 'core.h'
+            'core.cpp': 'core.cpp'
+    interface:
+        documents:
+            '{{interface|lower}}service.h': 'service.h'
+    struct:
+        documents:
+            '{{struct|lower}}model.h': 'structmodel.h'
+            '{{struct|lower}}model.cpp': 'structmodel.cpp'
+plugins:
+    source: 'plugins/plugin'
+    module:
+        destination: '{{dst}}/plugins/plugin_{{module|identifier}}'
+        documents:
+            'plugin_{{module|identifier}}.pro': 'plugin.pro'
+            'qmldir': 'qmldir'
+            'plugin.cpp': 'plugin.cpp'
+            'plugin.h': 'plugin.h'
 server:
     source: 'servers/server'
     module:
@@ -109,3 +95,15 @@ server:
         # documents:
         preserve:
             '{{interface|lower}}service.cpp': 'service.cpp'
+apps:
+    when: [apps]
+    source: 'apps/app'
+    system:
+        destination: '{{dst}}/apps/demoapp'
+        documents:
+            'demoapp.pro': 'app.pro'
+            'qml.qrc': 'qml.qrc'
+            'main.cpp': 'main.cpp'
+            'qtquickcontrols2.conf': 'qtquickcontrols2.conf'
+        preserve:
+            'qml/Main.qml': 'qml/Main.qml'
