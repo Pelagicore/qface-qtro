@@ -21,27 +21,31 @@ general:
             'plugins/plugins.pro': 'plugins/plugins.pro'
             'servers/servers.pro': 'servers/servers.pro'
             'libs/libs.pro': 'libs/libs.pro'
+            'shared/shared.pro': 'shared/shared.pro'
 shared:
-    source: 'shared'
     system:
-        destination: '{{dst}}/shared'
+        source: 'shared/lib_shared'
+        destination: '{{dst}}/shared/lib_shared/'
         documents:
-            'shared.pri': 'shared.pri'
-            'server.conf': 'server.conf'
+            'lib_shared.pro': 'lib_shared.pro'
             'project.qrc': 'project.qrc'
+            'server.conf': 'server.conf'
             'variantmodel.h': 'variantmodel.h'
             'variantmodel.cpp': 'variantmodel.cpp'
+            'use_lib_shared.pri': 'use_lib_shared.pri'
     module:
-        destination: '{{dst}}/shared/shared_{{module|identifier}}'
+        source: 'shared/lib_shared_module'
+        destination: '{{dst}}/shared/lib_shared_{{module|identifier}}'
         documents:
-            'shared_{{module|identifier}}.pri': 'module/module.pri'
+            'lib_shared_{{module|identifier}}.pro': 'lib_shared_module.pro'
+            'use_lib_shared_{{module|identifier}}.pri': 'use_lib_shared_module.pri'
     struct:
         documents:
-            '{{struct|lower}}.h': 'module/struct.h'
-            '{{struct|lower}}.cpp': 'module/struct.cpp'
+            '{{struct|lower}}.h': 'struct.h'
+            '{{struct|lower}}.cpp': 'struct.cpp'
     enum:
         documents:
-            '{{enum|lower}}enum.h': 'module/enum.h'
+            '{{enum|lower}}enum.h': 'enum.h'
 plugins:
     source: 'plugins/plugin'
     module:
@@ -57,7 +61,7 @@ lib_service:
         destination: '{{dst}}/libs/lib_service_{{module|identifier}}'
         documents:
             'lib_service_{{module|identifier}}.pro': 'service.pro'
-            'useservicelib_{{module|identifier}}.pri': 'useservicelib.pri'
+            'use_lib_service_{{module|identifier}}.pri': 'use_lib_service.pri'
             'core.h': 'core.h'
             'core.cpp': 'core.cpp'
     interface:
@@ -75,7 +79,7 @@ lib_client:
         destination: '{{dst}}/libs/lib_client_{{module|identifier}}'
         documents:
             'lib_client_{{module|identifier}}.pro': 'client.pro'
-            'useclientlib_{{module|identifier}}.pri': 'useclientlib.pri'
+            'use_lib_client_{{module|identifier}}.pri': 'use_lib_client.pri'
             'CMakeLists.txt': 'CMakeLists.txt'
             'core.h': 'core.h'
             'core.cpp': 'core.cpp'
@@ -105,5 +109,6 @@ server:
             '{{module.name|lower}}engine.h': 'engine.h'
             '{{module|lower}}engine.cpp': 'engine.cpp'
     interface:
+        # documents:
         preserve:
             '{{interface|lower}}service.cpp': 'service.cpp'

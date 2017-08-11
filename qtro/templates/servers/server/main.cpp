@@ -15,8 +15,10 @@
 
 void registerModel(QRemoteObjectHostBase* host, QAbstractItemModel* model, const QString& name)
 {
-    Q_ASSERT(host);
-    Q_ASSERT(model);
+    if (!host or !model) {
+        qWarning() << "no host or model given. Can not register model: " << name;
+        return;
+    }
     QVector<int> roles = model->roleNames().keys().toVector();
     host->enableRemoting(model, name, roles);
     qDebug() << "model at: " << name;

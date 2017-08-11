@@ -67,7 +67,7 @@ public: // data
 {% if 'scaffold' in features %}
     return d_ptr->{{property}};
 {% else %}
-    // TODO: implement {{class}}::{{property}}
+    // FIXME: implement {{class}}::{{property}}
     return {{property|defaultValue}};
 {% endif %}
 }
@@ -80,7 +80,7 @@ void {{class}}::set{{property|upperfirst}}({{property|parameterType}})
         Q_EMIT {{property}}Changed({{property}});
     }
 {% else %}
-    // TODO: implement {{class}}::set{{property|upperfirst}}(..)
+    // FIXME: implement {{class}}::set{{property|upperfirst}}(..)
 {% endif %}
 }
 
@@ -89,7 +89,7 @@ void {{class}}::push{{property|upperfirst}}({{property|parameters}})
 {% if 'scaffold' in features %}
     set{{property|upperfirst}}({{property}});
 {% else %}
-    // TODO: implement {{class}}::push{{property|upperfirst}}(..)
+    // FIXME: implement {{class}}::push{{property|upperfirst}}(..)
 {% endif %}
 }
 {% endfor %}
@@ -100,7 +100,7 @@ QAbstractItemModel *{{class}}::{{property}}() const
 {% if 'scaffold' in features %}
     return d_ptr->{{property}};
 {% else %}
-    // TODO: implement {{class}}::{{property}}()
+    // FIXME: implement {{class}}::{{property}}()
     return nullptr;
 {% endif %}
 }
@@ -115,6 +115,7 @@ QAbstractItemModel *{{class}}::{{property}}() const
     {% endfor %}
     return {{operation|defaultValue}};
 {% else %}
+    // FIXME: implement {{class}}::{{operation}}(...)
     return {{operation|defaultValue}};
 {% endif %}
 }

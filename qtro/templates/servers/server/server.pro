@@ -19,7 +19,7 @@ SOURCES += {{module.name|lower}}engine.cpp
 SOURCES += {{interface|lower}}service.cpp
 {% endfor %}
 
-include( $$SOURCE_DIR/libs/lib_service_{{module|identifier}}/useservicelib_{{module|identifier}}.pri )
+include( $$SOURCE_DIR/libs/lib_service_{{module|identifier}}/use_lib_service_{{module|identifier}}.pri )
 
 
 

@@ -1,3 +1,14 @@
+TEMPLATE = lib
+TARGET = shared_{{module|identifier}}
+DESTDIR = $$BUILD_DIR/libs
+
+CONFIG += staticlib
+CONFIG += c++11
+
+QT += core
+QT += qml
+QT += remoteobjects
+
 {% for struct in module.structs %}
 # {{struct}}
 HEADERS += $$PWD/{{struct|lower}}.h
@@ -8,4 +19,6 @@ SOURCES += $$PWD/{{struct|lower}}.cpp
 HEADERS += $$PWD/{{enum|lower}}enum.h
 {% endfor %}
 
-INCLUDEPATH += $$PWD
+
+OTHER_FILES += usesharedlib_{{module|identifier}}.pri
+

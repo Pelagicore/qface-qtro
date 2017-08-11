@@ -21,7 +21,7 @@ HEADERS += $$PWD/{{struct|lower}}model.h
 SOURCES += $$PWD/{{struct|lower}}model.cpp
 {% endfor %}
 
-include( $$SOURCE_DIR/shared/shared.pri )
-include( $$SOURCE_DIR/shared/shared_{{module|identifier}}/shared_{{module|identifier}}.pri )
+include( $$SOURCE_DIR/shared/lib_shared/use_lib_shared.pri )
+include( $$SOURCE_DIR/shared/lib_shared_{{module|identifier}}/use_lib_shared_{{module|identifier}}.pri )
 
-OTHER_FILES += useservicelib_{{module|identifier}}.pri
+OTHER_FILES += use_lib_service_{{module|identifier}}.pri
