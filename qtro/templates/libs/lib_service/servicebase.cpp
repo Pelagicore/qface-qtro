@@ -16,9 +16,11 @@
 
 {{class}}::{{class}}(QObject *parent)
     : QObject(parent)
+{% if 'scaffold' in features %}
 {% for property in properties %}
     , m_{{property}}({{property|defaultValue}})
 {% endfor %}
+{% endif %}
 {% for property in models %}
 {% if property.is_primitive_model %}
     , m_{{property}}(new VariantModel(this))
@@ -30,6 +32,7 @@
     qCDebug({{cat}}) << "{{class}}::{{class}}()";
 }
 
+{% if 'scaffold' in features %}
 {% for property in properties %}
 {{property|returnType}} {{class}}::{{property}}() const
 {
@@ -43,21 +46,22 @@ void {{class}}::set{{property|upperfirst}}({{property|parameterType}})
         Q_EMIT {{property}}Changed({{property}});
     }
 }
-
 void {{class}}::push{{property|upperfirst}}({{property|parameters}})
 {
     set{{property|upperfirst}}({{property}});
 }
 
 {% endfor %}
+{% endif %}
 
 {% for property in models %}
-{{property|returnType}} {{class}}::{{property}}() const
+QAbstractItemModel *{{class}}::{{property}}() const
 {
     return m_{{property}};
 }
 {% endfor %}
 
+{% if 'scaffold' in features %}
 {% for operation in interface.operations %}
 {{operation|returnType}} {{class}}::{{operation}}({{operation|parameters}})
 {
@@ -68,4 +72,5 @@ void {{class}}::push{{property|upperfirst}}({{property|parameters}})
     return {{operation|defaultValue}};
 }
 {% endfor %}
+{% endif %}
 

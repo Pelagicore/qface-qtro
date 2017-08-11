@@ -31,15 +31,22 @@ class {{class}} : public QObject
 
 public:
     explicit {{class}}(QObject *parent = nullptr);
-
+{% if 'scaffold' in features %}
 {% for property in properties %}
     virtual {{property|returnType}} {{property}}() const;
     virtual void set{{property|upperfirst}}({{property|parameterType}});
 
 {% endfor %}
+{% else %}
+{% for property in properties %}
+    virtual {{property|returnType}} {{property}}() const = 0;
+    virtual void set{{property|upperfirst}}({{property|parameterType}}) = 0;
+
+{% endfor %}
+{% endif %}
 
 {% for property in models %}
-    {{property|returnType}} {{property}}() const;
+    QAbstractItemModel *{{property}}() const;
 {% endfor %}
 
 Q_SIGNALS:
@@ -53,17 +60,27 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 {% for property in properties %}
+{% if 'scaffold' in features %}
     virtual void push{{property|upperfirst}}({{property|parameters}});
+{% else %}
+    virtual void push{{property|upperfirst}}({{property|parameters}}) = 0;
+{% endif %}
 {% endfor %}
 
 {% for operation in interface.operations %}
+{% if 'scaffold' in features %}
     virtual {{operation|returnType}} {{operation}}({{operation|parameters}});
+{% else %}
+    virtual {{operation|returnType}} {{operation}}({{operation|parameters}}) = 0;
+{% endif %}
 {% endfor %}
 
 private:
+{% if 'scaffold' in features %}
 {% for property in properties %}
     {{property|returnType}} m_{{property}};
 {% endfor %}
+{% endif %}
 {% for property in models %}
     {{property|returnType}} m_{{property}};
 {% endfor %}
