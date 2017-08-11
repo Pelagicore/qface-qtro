@@ -16,7 +16,6 @@ HEADERS += {{module.name|lower}}engine.h
 SOURCES += {{module.name|lower}}engine.cpp
 
 {% for interface in module.interfaces %}
-HEADERS += {{interface|lower}}service.h
 SOURCES += {{interface|lower}}service.cpp
 {% endfor %}
 

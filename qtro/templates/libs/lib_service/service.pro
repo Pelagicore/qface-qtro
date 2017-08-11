@@ -13,8 +13,7 @@ HEADERS += $$PWD/core.h
 SOURCES += $$PWD/core.cpp
 
 {% for interface in module.interfaces %}
-HEADERS += $$PWD/{{interface|lower}}servicebase.h
-SOURCES += $$PWD/{{interface|lower}}servicebase.cpp
+HEADERS += $$PWD/{{interface|lower}}service.h
 {% endfor %}
 
 {% for struct in module.structs %}

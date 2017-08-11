@@ -63,8 +63,7 @@ lib_service:
             'core.cpp': 'core.cpp'
     interface:
         documents:
-            '{{interface|lower}}servicebase.h': 'servicebase.h'
-            '{{interface|lower}}servicebase.cpp': 'servicebase.cpp'
+            '{{interface|lower}}service.h': 'service.h'
     struct:
         documents:
             '{{struct|lower}}model.h': 'structmodel.h'
@@ -105,10 +104,12 @@ server:
             'main.cpp': 'main.cpp'
             '{{module.name|lower}}engine.h': 'engine.h'
             '{{module|lower}}engine.cpp': 'engine.cpp'
+        preserve:
+            - '{{module.name|lower}}engine.h'
+            - '{{module|lower}}engine.cpp'
+
     interface:
         documents:
-            '{{interface|lower}}service.h': 'service.h'
             '{{interface|lower}}service.cpp': 'service.cpp'
         preserve:
-            - '{{interface|lower}}service.h'
             - '{{interface|lower}}service.cpp'

@@ -1,4 +1,4 @@
-{% set class = '{0}ServiceBase'.format(interface) %}
+{% set class = '{0}Service'.format(interface) %}
 {% set models = interface.properties|selectattr('is_model')|list %}
 {% set primitive_models = interface.properties|selectattr('is_primitive_model')|list %}
 {% set complex_models = interface.properties|selectattr('is_complex_model')|list %}
@@ -19,6 +19,8 @@
 
 {{module|open_ns}}
 
+class {{class}}Private;
+
 class {{class}} : public QObject
 {
     Q_OBJECT
@@ -31,20 +33,12 @@ class {{class}} : public QObject
 
 public:
     explicit {{class}}(QObject *parent = nullptr);
-{% if 'scaffold' in features %}
+    virtual ~{{class}}();
 {% for property in properties %}
-    virtual {{property|returnType}} {{property}}() const;
-    virtual void set{{property|upperfirst}}({{property|parameterType}});
+    {{property|returnType}} {{property}}() const;
+    void set{{property|upperfirst}}({{property|parameterType}});
 
 {% endfor %}
-{% else %}
-{% for property in properties %}
-    virtual {{property|returnType}} {{property}}() const = 0;
-    virtual void set{{property|upperfirst}}({{property|parameterType}}) = 0;
-
-{% endfor %}
-{% endif %}
-
 {% for property in models %}
     QAbstractItemModel *{{property}}() const;
 {% endfor %}
@@ -57,33 +51,18 @@ Q_SIGNALS:
     void {{signal}}({{signal|parameters}});
 {% endfor %}
 
-
 public Q_SLOTS:
 {% for property in properties %}
-{% if 'scaffold' in features %}
-    virtual void push{{property|upperfirst}}({{property|parameters}});
-{% else %}
-    virtual void push{{property|upperfirst}}({{property|parameters}}) = 0;
-{% endif %}
+    void push{{property|upperfirst}}({{property|parameters}});
 {% endfor %}
 
 {% for operation in interface.operations %}
-{% if 'scaffold' in features %}
-    virtual {{operation|returnType}} {{operation}}({{operation|parameters}});
-{% else %}
-    virtual {{operation|returnType}} {{operation}}({{operation|parameters}}) = 0;
-{% endif %}
+    {{operation|returnType}} {{operation}}({{operation|parameters}});
 {% endfor %}
 
 private:
-{% if 'scaffold' in features %}
-{% for property in properties %}
-    {{property|returnType}} m_{{property}};
-{% endfor %}
-{% endif %}
-{% for property in models %}
-    {{property|returnType}} m_{{property}};
-{% endfor %}
+    Q_DISABLE_COPY({{class}})
+    QScopedPointer<{{class}}Private> d_ptr;
     friend class QT_PREPEND_NAMESPACE(QRemoteObjectNode);
 };
 

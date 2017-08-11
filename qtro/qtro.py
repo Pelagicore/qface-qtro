@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Copyright (c) Pelagicore AB 2016
 
+import sys
 import click
 import logging
 import logging.config
