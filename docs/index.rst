@@ -16,7 +16,7 @@ The IPC is based on the QtRemoteObjects module which was added in the Qt 5.9 rel
    motivation
    usage
    client
-   server
+   service
    examples
 
 Installing
