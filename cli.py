@@ -111,9 +111,11 @@ def pack():
 
 @cli.command()
 def docs_serve():
-    server = Server()
-    server.watch('docs/*.rst', shell('make html', cwd='docs'))
-    server.serve(root='docs/_build/html', open_url=True)
+    with Path('docs'):
+        sh('make html')
+        server = Server()
+        server.watch('*.rst', shell('make html'))
+        server.serve(root='_build/html', open_url_delay=True)
 
 
 @cli.command()
