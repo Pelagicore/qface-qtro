@@ -23,7 +23,7 @@ class {{class}}
 {
     Q_GADGET
 {% for field in struct.fields %}
-    Q_PROPERTY({{field|ns}}{{field|returnType}} {{field}} READ {{field}} WRITE set{{field|upperfirst}})
+    Q_PROPERTY({{field|returnType}} {{field}} READ {{field}} WRITE set{{field|upperfirst}})
 {% endfor %}
 public: // operations
     enum ModelRole {
