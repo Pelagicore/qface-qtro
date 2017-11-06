@@ -40,7 +40,7 @@ void {{class}}::set{{property|upperfirst}}({{property|parameters}})
 {% for property in properties %}
 void {{class}}::push{{property|upperfirst}}({{property|parameters}})
 {
-    static int __repc_index = {{class}}::staticMetaObject.indexOfSlot("{{property}}({{operation|parameters('returnType', False)}})");
+    static int __repc_index = {{class}}::staticMetaObject.indexOfSlot("{{property}}({{property|parameters('returnType', False)}})");
     QVariantList __repc_args;
     __repc_args << QVariant::fromValue({{property}});
     send(QMetaObject::InvokeMetaMethod, __repc_index, __repc_args);
