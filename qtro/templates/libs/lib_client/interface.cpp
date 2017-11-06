@@ -26,9 +26,7 @@ QObject* {{class|lower}}_singletontype_provider(QQmlEngine*, QJSEngine*)
    \qmltype {{interface}}
    \inqmlmodule {{module}}
 {% with doc = interface.comment|parse_doc %}
-   \brief {{doc.brief}}
-
-   {{doc.description}}
+   \brief {{doc.description|join()}}
 {% endwith %}
 */
 {{class}}::{{class}}(QObject *parent)
