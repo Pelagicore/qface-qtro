@@ -13,6 +13,10 @@
 
 #include <QtCore>
 
+{% for enum in module.enums %}
+#include "{{enum|lower}}enum.h"
+{% endfor %}
+
 {{module|open_ns}}
 
 class {{class}}

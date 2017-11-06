@@ -44,7 +44,7 @@ class CustomFilters:
             value = next(iter(symbol.members))
             return '{0}{1}Enum::{1}::{2}'.format(prefix, symbol, value)
         t = symbol.type  # type: qface.domain.TypeSymbol
-        if t.is_enum:
+        if t.is_enumeration:
             value = next(iter(t.reference.members))
             return '{0}{1}Enum::{1}::{2}'.format(prefix, t, value)
         return Filters.defaultValue(symbol)
@@ -52,16 +52,17 @@ class CustomFilters:
     @staticmethod
     def parameterType(symbol):
         prefix = Filters.classPrefix
-        if symbol.type.is_enum:
+        if symbol.type.is_enumeration:
             return '{0}{1}Enum::{1} {2}'.format(prefix, symbol.type, symbol)
         return Filters.parameterType(symbol)
 
     @staticmethod
     def returnType(symbol):
         prefix = Filters.classPrefix
+        print(symbol, 'is_enum', symbol.kind)
         if symbol.kind == 'enum':
             return '{0}{1}Enum::{1}'.format(prefix, symbol)
-        elif symbol.type.is_enum:
+        elif symbol.type.is_enumeration:
             return '{0}{1}Enum::{1}'.format(prefix, symbol.type)
         return Filters.returnType(symbol)
 

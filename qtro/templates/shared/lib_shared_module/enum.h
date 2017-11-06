@@ -1,3 +1,12 @@
+{% set class = '{0}'.format(enum) %}
+/****************************************************************************
+** This is an auto-generated file.
+** Do not edit! All changes made to it will be lost.
+****************************************************************************/
+
+#ifndef {{class|upper}}_H
+#define {{class|upper}}_H
+
 #include <QtCore>
 #include <QtQml>
 
@@ -13,7 +22,12 @@ public:
 {% endfor %}
 
     };
+    {%if enum.is_flag%}
+    Q_DECLARE_FLAGS({{enum}}Flags, {{enum}})
+    Q_FLAG({{enum}})
+    {% else %}
     Q_ENUM({{enum}})
+    {%endif%}
 
     static {{enum}} toEnum(quint8 v, bool *ok) {
         if (ok) {
@@ -38,6 +52,11 @@ public:
     }
 };
 
+{% if enum.is_flag %}
+Q_DECLARE_OPERATORS_FOR_FLAGS({{enum}}Enum::{{enum}}Flags)
+{% endif %}
+
+
 {{module|close_ns}}
 
 inline QDataStream &operator<<(QDataStream &ds, const {{module|ns}}{{enum}}Enum::{{enum}} &obj)
@@ -57,3 +76,5 @@ inline QDataStream &operator>>(QDataStream &ds, {{module|ns}}{{enum}}Enum::{{enu
     }
     return ds;
 }
+
+#endif // {{class|upper}}_H
