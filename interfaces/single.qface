@@ -1,0 +1,4 @@
+module single 1.0
+
+interface Single {
+}

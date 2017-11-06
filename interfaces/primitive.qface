@@ -1,0 +1,27 @@
+module primitive 1.0
+
+interface Primitive {
+    bool boolValue
+    int intValue
+    real realValue
+    string stringValue
+    var varValue
+
+    bool boolOperation(bool a, bool b);
+    int intOperation(int a, int b);
+    real realOperation(real a, real b);
+    string stringOperation(string a, string b);
+    var varOperation(var a, var b);
+
+    void boolAddOperation(bool a);
+    void intAddOperation(int a);
+    void realAddOperation(real a);
+    string stringAddOperation(string a);
+    var varAddOperation(var a);
+
+    signal boolChanged(bool value)
+    signal intChanged(int value)
+    signal realChanged(real value)
+    signal stringChanged(string value)
+    signal varChanged(var value)
+}

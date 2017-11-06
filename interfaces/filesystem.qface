@@ -1,0 +1,18 @@
+module filesystem 1.0
+
+interface FileSystem {
+    string currentPath;
+    model<FileEntry> entries;
+    void cd(string path);
+    void cdUp();
+    void copy(string src, string dst);
+    void move(string src, string dst);
+    void remove(string src);
+}
+
+struct FileEntry {
+    string name;
+    string path;
+    bool isDir;
+    bool isFile;
+}
