@@ -59,7 +59,6 @@ class CustomFilters:
     @staticmethod
     def returnType(symbol):
         prefix = Filters.classPrefix
-        print(symbol, 'is_enum', symbol.kind)
         if symbol.kind == 'enum':
             return '{0}{1}Enum::{1}'.format(prefix, symbol)
         elif symbol.type.is_enumeration:
@@ -132,7 +131,7 @@ def run(src, dst):
 @click.option('--servers/--no-servers', default=True, help="Generates server code")
 @click.option('cmd', '--exec', type=click.Path(exists=True), multiple=True, help="Executes script after code generation")
 @click.argument('src', nargs=-1, type=click.Path(exists=True))
-@click.argument('dst', nargs=1, type=click.Path(exists=True))
+@click.argument('dst', nargs=1, type=click.Path(exists=False))
 def app(src, dst, reload, cmd, scaffold, apps, servers):
     """Takes several files or directories as src and generates the code
     in the given dst directory."""
