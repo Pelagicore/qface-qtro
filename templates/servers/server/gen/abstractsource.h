@@ -22,39 +22,18 @@
 // #include "{{enum|lower}}.h"
 {% endfor %}
 
-class {{class}} : public {{interface}}SimpleSource
+class {{class}} : public {{interface}}Source
 {
     Q_OBJECT
 {% for property in interface.properties if property.type.is_model %}
-{% if property.type.nested.is_primitive %}
-    Q_PROPERTY(VariantModel* {{property}} READ {{property}} CONSTANT)
-{% else %}
-    Q_PROPERTY({{property.type.nested|upperfirst}}Model* {{property}} READ {{property}} CONSTANT)
-{% endif %}
+    Q_PROPERTY(QAbstractItemModel* {{property}} READ {{property}} CONSTANT)
 {% endfor %}
 
 public:
     explicit {{class}}(QObject *parent = nullptr);
 
 {% for property in interface.properties if property.type.is_model %}
-{% if property.type.nested.is_primitive %}
-    virtual VariantModel* {{property}}() const;
-{% else %}
-    virtual {{property.type.nested|upperfirst}}Model* {{property}}() const;
-{% endif %}
-{% endfor %}
-
-public Q_SLOTS:
-{% for operation in interface.operations %}
-    virtual {{operation|qt.returnType}} {{operation}}({{operation|qt.parameters}});
-{% endfor %}
-private:
-{% for property in interface.properties if property.type.is_model %}
-{% if property.type.nested.is_primitive %}
-    VariantModel* m_{{property}};
-{% else %}
-    {{property.type.nested|upperfirst}}Model* m_{{property}};
-{% endif %}
+    virtual QAbstractItemModel* {{property}}() const = 0;
 {% endfor %}
 };
 
