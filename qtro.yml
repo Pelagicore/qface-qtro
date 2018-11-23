@@ -1,0 +1,55 @@
+project:
+  system:
+    documents:
+      - '{{project}}.pro': 'project.pro'
+      - '.qmake.conf': 'qmake.conf'
+      - 'servers/servers.pro'
+      - 'plugins/plugins.pro'
+  module:
+    documents:
+      - 'shared/{{module|identifier}}.rep' : 'shared/repc.rep'
+plugin:
+  path: 'plugins/{{module|identifier}}'
+  module:
+    documents:
+      - '{{module|identifier}}.pro': 'plugins/plugin/plugin.pro'
+      - 'qmldir': 'plugins/plugin/qmldir'
+      - 'plugin.cpp': 'plugins/plugin/plugin.cpp'
+      - 'plugin.h': 'plugins/plugin/plugin.h'
+      - 'docs/plugin.qdocconf': 'plugins/plugin/plugin.qdocconf'
+      - 'docs/plugin-project.qdocconf': 'plugins/plugin/plugin-project.qdocconf'
+      - 'docs/docs.pri': 'plugins/plugin/docs.pri'
+      - 'gen/gen.pri': 'plugins/plugin/gen/gen.pri'
+      - 'gen/core.h': 'plugins/plugin/gen/core.h'
+      - 'gen/core.cpp': 'plugins/plugin/gen/core.cpp'
+  interface:
+    documents:
+      - '{{interface|lower}}.h': 'plugins/plugin/interface.h'
+      - '{{interface|lower}}.cpp': 'plugins/plugin/interface.cpp'
+      - 'gen/abstract{{interface|lower}}.h': 'plugins/plugin/gen/abstractinterface.h'
+      - 'gen/abstract{{interface|lower}}.cpp': 'plugins/plugin/gen/abstractinterface.cpp'
+server:
+  path: 'servers/{{module|identifier}}'
+  module:
+    documents:
+      - 'gen/gen.pri': 'servers/server/gen/gen.pri'
+      - 'gen/variantmodel.h': 'servers/server/gen/variantmodel.h'
+      - 'gen/variantmodel.cpp': 'servers/server/gen/variantmodel.cpp'
+  interface:
+    documents:
+      - '{{interface|lower}}service.h': 'servers/server/service.h'
+      - '{{interface|lower}}service.cpp': 'servers/server/service.cpp'
+      - 'gen/abstract{{interface|lower}}source.h': 'servers/server/gen/abstractsource.h'
+      - 'gen/abstract{{interface|lower}}source.cpp': 'servers/server/gen/abstractsource.cpp'
+  struct:
+    documents:
+      - 'gen/{{struct|lower}}model.h': 'servers/server/gen/structmodel.h'
+      - 'gen/{{struct|lower}}model.cpp': 'servers/server/gen/structmodel.cpp'
+scaffold:
+  when: scaffold
+  module:
+    when: scaffold
+    documents:
+      - '{{module|identifier}}.pro': 'servers/server/server.pro'
+      - 'main.cpp': 'servers/server/main.cpp'
+

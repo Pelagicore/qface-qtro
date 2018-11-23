@@ -1,5 +1,0 @@
-click
-path.py
-Jinja2
-PyYAML
-qface>=1.8

@@ -1,0 +1,26 @@
+#include <QtCore>
+
+{% for enum in module.enums %}
+ENUM {{enum}} { {{enum.members|join(',')}} }
+{% endfor %}
+
+{% for struct in module.structs %}
+POD {{struct}} ({{struct|qt.signature(expand=True)}})
+{% endfor %}
+
+{% for interface in module.interfaces %}
+class {{interface}}
+{
+{% for property in interface.properties if not property.type.is_model %}
+    PROP({{property|qt.signature(expand=True)}})
+{% endfor %}
+{% for operation in interface.operations %}
+    SLOT({{operation|qt.returnType}} {{operation}}({{operation|qt.parameters}}))
+{% endfor %}
+{% for signal in interface.signals %}
+    SIGNAL({{signal}}({{signal|qt.signature(expand=True)}}))
+{% endfor %}
+};
+{% endfor %}
+
+
